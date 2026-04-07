@@ -70,7 +70,7 @@ export default function AuthPopup() {
         style={{ animation: 'popIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both' }}
       >
         {/* Header band */}
-        <div className="bg-[#1e5054] px-7 pt-8 pb-6 text-white text-center">
+        <div className="bg-[#2D6A4F] px-7 pt-8 pb-6 text-white text-center">
           <img
             src="/icon2.png"
             alt="Crave Better Foods"
@@ -177,7 +177,7 @@ export default function AuthPopup() {
               </div>
               {err && <p className="text-xs text-red-600 bg-red-50 rounded-lg px-3 py-2">{err}</p>}
               <button type="submit" disabled={loading}
-                className="w-full bg-[#1e5054] text-white font-bold py-3 rounded-full text-sm hover:bg-[#245940] transition-colors disabled:opacity-60 mt-1">
+                className="w-full bg-[#2D6A4F] text-white font-bold py-3 rounded-full text-sm hover:bg-[#245940] transition-colors disabled:opacity-60 mt-1">
                 {loading ? 'Creating account…' : 'Create Account'}
               </button>
             </form>

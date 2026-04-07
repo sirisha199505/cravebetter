@@ -92,7 +92,7 @@ export default function Home() {
         />
 
         <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full border border-white/5 z-0" />
-        <div className="absolute -left-12 bottom-16 w-60 h-60 rounded-full bg-[#1e5054]/15 blur-3xl z-0" />
+        <div className="absolute -left-12 bottom-16 w-60 h-60 rounded-full bg-[#2D6A4F]/15 blur-3xl z-0" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-16 sm:py-24 md:py-28 w-full grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12 items-center">
 
@@ -191,9 +191,9 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-5 py-8 sm:py-10 grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 text-center">
           {[
             { value: '20g', label: 'Protein Per Bar', color: 'text-[#54221b]' },
-            { value: '5', label: 'Unique Flavours', color: 'text-[#1e5054]' },
+            { value: '5', label: 'Unique Flavours', color: 'text-[#2D6A4F]' },
             { value: '100%', label: 'Natural Ingredients', color: 'text-[#54221b]' },
-            { value: '10k+', label: 'Happy Athletes', color: 'text-[#1e5054]' },
+            { value: '10k+', label: 'Happy Athletes', color: 'text-[#2D6A4F]' },
           ].map(s => (
             <div key={s.label}>
               <div className={`text-3xl sm:text-4xl font-black ${s.color} mb-1`}>{s.value}</div>
@@ -222,7 +222,7 @@ export default function Home() {
                 key={b.title}
                 className="group bg-white rounded-2xl p-5 sm:p-7 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
               >
-                <div className="w-11 h-11 sm:w-12 sm:h-12 bg-[#1e5054]/10 rounded-xl flex items-center justify-center mb-4 sm:mb-5 text-[#1e5054] group-hover:bg-[#1e5054] group-hover:text-white transition-all duration-300">
+                <div className="w-11 h-11 sm:w-12 sm:h-12 bg-[#2D6A4F]/10 rounded-xl flex items-center justify-center mb-4 sm:mb-5 text-[#2D6A4F] group-hover:bg-[#2D6A4F] group-hover:text-white transition-all duration-300">
                   {b.icon}
                 </div>
                 <h3 className="font-black text-gray-900 text-sm sm:text-base mb-1.5">{b.title}</h3>
@@ -238,7 +238,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-5 sm:px-6">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4 mb-8 sm:mb-12">
             <div>
-              <span className="inline-block text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#1e5054] mb-2 sm:mb-3">Our Range</span>
+              <span className="inline-block text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#2D6A4F] mb-2 sm:mb-3">Our Range</span>
               <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-gray-900">
                 5 Flavours.{' '}
                 <span className="text-[#54221b]">Endless Gains.</span>
@@ -289,7 +289,7 @@ export default function Home() {
                       </button>
                       <Link
                         to={`/products/${p.id}`}
-                        className="text-[10px] sm:text-xs font-bold px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-[#1e5054] text-[#1e5054] hover:bg-[#1e5054] hover:text-white transition-all"
+                        className="text-[10px] sm:text-xs font-bold px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-[#2D6A4F] text-[#2D6A4F] hover:bg-[#2D6A4F] hover:text-white transition-all"
                       >
                         Info
                       </Link>
@@ -303,7 +303,7 @@ export default function Home() {
       </section>
 
       {/* ── HOW IT WORKS ── */}
-      <section className="py-14 sm:py-20 bg-[#1e5054] relative overflow-hidden">
+      <section className="py-14 sm:py-20 bg-[#2D6A4F] relative overflow-hidden">
         <div className="absolute inset-0" style={{
           backgroundImage: 'radial-gradient(ellipse at 80% 20%, rgba(255,255,255,0.06) 0%, transparent 50%)',
         }} />
@@ -322,7 +322,7 @@ export default function Home() {
               { step: '03', title: 'Delivered Fresh', desc: 'Your bars are packed and delivered straight to your door, fast and fresh.' },
             ].map((s) => (
               <div key={s.step} className="relative text-center group">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center mx-auto mb-4 sm:mb-6 text-xl sm:text-2xl font-black group-hover:bg-white group-hover:text-[#1e5054] transition-all duration-300 shadow-lg">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center mx-auto mb-4 sm:mb-6 text-xl sm:text-2xl font-black group-hover:bg-white group-hover:text-[#2D6A4F] transition-all duration-300 shadow-lg">
                   {s.step}
                 </div>
                 <h3 className="text-base sm:text-lg font-black text-white mb-2">{s.title}</h3>
@@ -333,7 +333,7 @@ export default function Home() {
           <div className="text-center mt-10 sm:mt-14">
             <Link
               to="/products"
-              className="inline-flex items-center gap-2 bg-white text-[#1e5054] font-black px-8 sm:px-10 py-3.5 sm:py-4 rounded-full hover:bg-green-50 transition-colors shadow-lg text-sm"
+              className="inline-flex items-center gap-2 bg-white text-[#2D6A4F] font-black px-8 sm:px-10 py-3.5 sm:py-4 rounded-full hover:bg-green-50 transition-colors shadow-lg text-sm"
             >
               Start Shopping <ArrowRight size={15} />
             </Link>

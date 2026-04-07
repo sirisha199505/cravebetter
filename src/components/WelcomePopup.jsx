@@ -23,7 +23,7 @@ export default function WelcomePopup() {
         style={{ animation: 'popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both' }}
       >
         {/* Top brand band */}
-        <div className="bg-[#1e5054] px-6 sm:px-8 pt-8 pb-7 text-white text-center relative overflow-hidden">
+        <div className="bg-[#2D6A4F] px-6 sm:px-8 pt-8 pb-7 text-white text-center relative overflow-hidden">
           {/* Decorative */}
           <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full border border-white/5" />
           <div className="absolute -left-6 bottom-0 w-24 h-24 rounded-full bg-white/10 blur-2xl" />
@@ -84,7 +84,7 @@ export default function WelcomePopup() {
             <Link
               to="/bulk-orders"
               onClick={close}
-              className="w-full border border-[#1e5054] text-[#1e5054] font-bold py-2.5 sm:py-3 rounded-full hover:bg-[#1e5054] hover:text-white transition-colors text-sm"
+              className="w-full border border-[#2D6A4F] text-[#2D6A4F] font-bold py-2.5 sm:py-3 rounded-full hover:bg-[#2D6A4F] hover:text-white transition-colors text-sm"
             >
               Bulk Orders
             </Link>

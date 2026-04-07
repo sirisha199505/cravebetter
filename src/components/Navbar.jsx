@@ -54,7 +54,7 @@ export default function Navbar() {
               className="h-8 w-8 sm:h-9 sm:w-9 object-contain flex-shrink-0"
             />
             <span className="font-black text-gray-900 text-sm sm:text-base md:text-lg leading-none tracking-tight">
-              Crave <span className="text-[#1e5054]">Better</span>
+              Crave <span className="text-[#2D6A4F]">Better</span>
             </span>
           </Link>
 
@@ -65,11 +65,11 @@ export default function Navbar() {
                 key={l.to}
                 to={l.to}
                 className={`relative text-sm lg:text-base font-semibold transition-colors pb-1 group ${
-                  isActive(l.to) ? 'text-[#1e5054]' : 'text-gray-700 hover:text-[#1e5054]'
+                  isActive(l.to) ? 'text-[#2D6A4F]' : 'text-gray-700 hover:text-[#2D6A4F]'
                 }`}
               >
                 {l.label}
-                <span className={`absolute bottom-0 left-0 h-0.5 bg-[#1e5054] transition-all duration-300 ${isActive(l.to) ? 'w-full' : 'w-0 group-hover:w-full'}`} />
+                <span className={`absolute bottom-0 left-0 h-0.5 bg-[#2D6A4F] transition-all duration-300 ${isActive(l.to) ? 'w-full' : 'w-0 group-hover:w-full'}`} />
               </Link>
             ))}
           </div>
@@ -79,14 +79,14 @@ export default function Navbar() {
             {/* Shop CTA — desktop only */}
             <Link
               to="/products"
-              className="hidden md:inline-flex items-center gap-1.5 bg-[#1e5054] text-white text-xs sm:text-sm font-bold px-4 sm:px-5 py-2 sm:py-2.5 rounded-full hover:bg-[#245940] transition-colors shadow-sm"
+              className="hidden md:inline-flex items-center gap-1.5 bg-[#2D6A4F] text-white text-xs sm:text-sm font-bold px-4 sm:px-5 py-2 sm:py-2.5 rounded-full hover:bg-[#245940] transition-colors shadow-sm"
             >
               Shop Now
             </Link>
 
             {/* Cart */}
             <Link to="/cart" className="relative p-2 sm:p-2.5 rounded-full hover:bg-gray-50 transition-colors">
-              <ShoppingCart size={20} className="text-[#1e5054]" />
+              <ShoppingCart size={20} className="text-[#2D6A4F]" />
               {itemCount > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 bg-[#54221b] text-white text-[9px] font-black w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center shadow">
                   {itemCount}
@@ -101,7 +101,7 @@ export default function Navbar() {
                   onClick={() => setUserMenuOpen(o => !o)}
                   className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-full hover:bg-gray-50 transition-colors"
                 >
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#1e5054] text-white text-xs font-black flex items-center justify-center flex-shrink-0">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#2D6A4F] text-white text-xs font-black flex items-center justify-center flex-shrink-0">
                     {initials}
                   </div>
                   <span className="hidden sm:block text-sm font-semibold text-gray-700 max-w-[90px] truncate">
@@ -129,7 +129,7 @@ export default function Navbar() {
             ) : (
               <button
                 onClick={() => setShowAuthPopup(true)}
-                className="flex items-center gap-1.5 border border-gray-200 text-gray-700 font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full hover:border-[#1e5054] hover:text-[#1e5054] transition-colors text-xs sm:text-sm"
+                className="flex items-center gap-1.5 border border-gray-200 text-gray-700 font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full hover:border-[#2D6A4F] hover:text-[#2D6A4F] transition-colors text-xs sm:text-sm"
               >
                 <User size={13} />
                 <span className="hidden sm:inline">Login</span>
@@ -142,7 +142,7 @@ export default function Navbar() {
               onClick={() => setOpen(o => !o)}
               aria-label="Toggle menu"
             >
-              {open ? <X size={20} className="text-[#1e5054]" /> : <Menu size={20} className="text-gray-700" />}
+              {open ? <X size={20} className="text-[#2D6A4F]" /> : <Menu size={20} className="text-gray-700" />}
             </button>
           </div>
         </div>
@@ -157,8 +157,8 @@ export default function Navbar() {
                 onClick={() => setOpen(false)}
                 className={`text-sm font-semibold px-3 py-2.5 rounded-xl transition-colors ${
                   isActive(l.to)
-                    ? 'bg-[#1e5054]/10 text-[#1e5054]'
-                    : 'text-gray-700 hover:bg-gray-50 hover:text-[#1e5054]'
+                    ? 'bg-[#2D6A4F]/10 text-[#2D6A4F]'
+                    : 'text-gray-700 hover:bg-gray-50 hover:text-[#2D6A4F]'
                 }`}
               >
                 {l.label}
@@ -168,14 +168,14 @@ export default function Navbar() {
               <Link
                 to="/products"
                 onClick={() => setOpen(false)}
-                className="block w-full text-center bg-[#1e5054] text-white font-bold py-2.5 rounded-full text-sm hover:bg-[#245940] transition-colors"
+                className="block w-full text-center bg-[#2D6A4F] text-white font-bold py-2.5 rounded-full text-sm hover:bg-[#245940] transition-colors"
               >
                 Shop Now
               </Link>
               {!isLoggedIn && (
                 <button
                   onClick={() => { setOpen(false); setShowAuthPopup(true); }}
-                  className="w-full text-center border border-gray-200 text-gray-700 font-semibold py-2.5 rounded-full text-sm hover:border-[#1e5054] hover:text-[#1e5054] transition-colors"
+                  className="w-full text-center border border-gray-200 text-gray-700 font-semibold py-2.5 rounded-full text-sm hover:border-[#2D6A4F] hover:text-[#2D6A4F] transition-colors"
                 >
                   Login / Register
                 </button>
