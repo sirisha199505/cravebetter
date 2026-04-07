@@ -155,7 +155,7 @@ export default function AdminLayout() {
               onError={e => { e.target.style.display = 'none'; }} />
             <div className="leading-none">
               <span className="font-black text-gray-900 text-sm sm:text-base tracking-tight block">
-                Crave <span className="text-[#2D6A4F]">Better</span>
+                Crave <span className="text-[#1e5054]">Better</span>
               </span>
               <span className="text-[10px] text-gray-400 font-medium">Admin Panel</span>
             </div>
@@ -168,7 +168,7 @@ export default function AdminLayout() {
               to="/"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-[#2D6A4F] border border-[#2D6A4F]/30 px-3 py-1.5 rounded-full hover:bg-[#2D6A4F]/5 transition-colors"
+              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-[#1e5054] border border-[#1e5054]/30 px-3 py-1.5 rounded-full hover:bg-[#1e5054]/5 transition-colors"
             >
               <ExternalLink size={12} />
               Main Site
@@ -203,7 +203,7 @@ export default function AdminLayout() {
                     to="/"
                     target="_blank"
                     onClick={() => setProfileOpen(false)}
-                    className="sm:hidden flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#2D6A4F] hover:bg-gray-50 transition-colors"
+                    className="sm:hidden flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#1e5054] hover:bg-gray-50 transition-colors"
                   >
                     <ExternalLink size={14} /> Main Site
                   </Link>

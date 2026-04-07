@@ -78,7 +78,7 @@ export default function BulkOrders() {
 
       {/* Header */}
       <div className="text-center mb-10 sm:mb-12">
-        <span className="inline-block text-xs font-bold uppercase tracking-widest text-[#2D6A4F] mb-3">Partner With Us</span>
+        <span className="inline-block text-xs font-bold uppercase tracking-widest text-[#1e5054] mb-3">Partner With Us</span>
         <h1 className="text-3xl sm:text-4xl font-black text-gray-900 mb-3">
           Bulk <span className="text-[#54221b]">Orders</span>
         </h1>
@@ -279,7 +279,7 @@ export default function BulkOrders() {
               {productOptions.slice(1).map(o => (
                 <div key={o.value} className="flex items-center justify-between text-sm">
                   <span className="text-gray-700 font-medium">{o.value}</span>
-                  <span className="text-xs text-[#2D6A4F] font-semibold bg-[#2D6A4F]/10 px-2.5 py-0.5 rounded-full">
+                  <span className="text-xs text-[#1e5054] font-semibold bg-[#1e5054]/10 px-2.5 py-0.5 rounded-full">
                     {o.label.includes('protein') ? o.label.split('— ')[1] : 'All flavours'}
                   </span>
                 </div>

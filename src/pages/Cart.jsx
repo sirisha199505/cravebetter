@@ -363,7 +363,7 @@ export default function Cart() {
             {/* Logged-in user badge */}
             {isLoggedIn && step === 'cart' && (
               <div className="mt-4 bg-green-50 border border-green-100 rounded-2xl px-4 py-2.5 flex items-center gap-2.5">
-                <div className="w-6 h-6 rounded-full bg-[#2D6A4F] text-white text-[10px] font-black flex items-center justify-center flex-shrink-0">
+                <div className="w-6 h-6 rounded-full bg-[#1e5054] text-white text-[10px] font-black flex items-center justify-center flex-shrink-0">
                   {userInfo?.full_name?.[0]?.toUpperCase() || 'U'}
                 </div>
                 <p className="text-xs text-green-700 font-semibold truncate">
