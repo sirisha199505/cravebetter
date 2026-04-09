@@ -27,16 +27,18 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 sm:h-14 flex items-center justify-between">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 sm:gap-3 flex-shrink-0">
+          <Link to="/" className="flex items-center gap-1 sm:gap-3 flex-shrink-0">
             <img
               src="/new logo.png"
               alt=""
               aria-hidden="true"
-              className="h-12 w-12 sm:h-14 sm:w-14 object-contain flex-shrink-0"
+              className="h-12 wsm:h-14 sm:w-14 object-contain flex-shrink-0"
             />
-            <span className="font-black text-gray-900 text-lg sm:text-xl md:text-2xl leading-none tracking-tight">
-              Crave <span className="text-[#2D6A4F]">Better</span>
-            </span>
+            <img
+              src="/icon.png"
+              alt="Crave Better"
+              className="h-10 w-20 sm:h-12 w-auto max-w-[150px] sm:max-w-[210px] object-contain flex-shrink-0"
+            />
           </Link>
 
           {/* Desktop links */}
