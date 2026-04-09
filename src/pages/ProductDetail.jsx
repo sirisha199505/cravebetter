@@ -7,10 +7,18 @@ import { products } from '../data/products';
 export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const product = products.find(p => p.id === Number(id));
   const { addToCart } = useCart();
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
+
+  const product = products.find(p => p.id === Number(id));
+  const related = products.filter(p => p.id !== Number(id));
+
+  const handleAdd = () => {
+    addToCart(product, qty);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 2000);
+  };
 
   if (!product) {
     return (
@@ -22,14 +30,6 @@ export default function ProductDetail() {
       </div>
     );
   }
-
-  const handleAdd = () => {
-    addToCart(product, qty);
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
-  };
-
-  const relatedProducts = products.filter(p => p.id !== product.id).slice(0, 3);
 
   return (
     <main className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
@@ -45,12 +45,24 @@ export default function ProductDetail() {
       {/* Main product section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-16">
         {/* Image */}
-        <div className="bg-gray-50 rounded-3xl overflow-hidden flex items-center justify-center p-6 min-h-72">
+        <div className="bg-[#faf7f5] rounded-3xl overflow-hidden flex items-center justify-center p-6 min-h-72 relative">
           <img
             src={product.image}
             alt={product.name}
             className="w-full max-h-96 object-contain drop-shadow-lg"
           />
+          {/* Highlight pills */}
+          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+            <span className="bg-[#54221b]/90 text-white text-xs font-bold px-3 py-1 rounded-full backdrop-blur-sm">
+              Rich in Protein
+            </span>
+            <span className="bg-[#2D6A4F]/90 text-white text-xs font-bold px-3 py-1 rounded-full backdrop-blur-sm">
+              Less Sugar
+            </span>
+            <span className="bg-[#1e5054]/90 text-white text-xs font-bold px-3 py-1 rounded-full backdrop-blur-sm">
+              Less Fat
+            </span>
+          </div>
         </div>
 
         {/* Info */}
@@ -63,16 +75,17 @@ export default function ProductDetail() {
               {product.badge}
             </span>
           )}
-          <h1 className="text-3xl md:text-4xl font-black text-gray-900 mb-2">{product.name}</h1>
-          <p className="text-2xl font-black text-[#54221b] mb-4">₹{product.price}</p>
+          <h1 className="text-3xl md:text-4xl font-black text-gray-900 mb-1">{product.name}</h1>
+          <p className="text-sm text-gray-400 mb-3">{product.weight} · Protein Bar</p>
+          <p className="text-2xl font-black text-[#54221b] mb-5">₹{product.price}</p>
 
           {/* Macros */}
           <div className="grid grid-cols-4 gap-3 mb-6">
             {[
-              { label: 'Protein', value: product.protein },
+              { label: 'Protein',  value: product.protein },
               { label: 'Calories', value: product.calories },
-              { label: 'Carbs', value: product.carbs },
-              { label: 'Fat', value: product.fat },
+              { label: 'Carbs',    value: product.carbs },
+              { label: 'Fat',      value: product.fat },
             ].map(m => (
               <div key={m.label} className="bg-gray-50 rounded-xl p-3 text-center">
                 <div className="text-base font-black text-[#54221b]">{m.value}</div>
@@ -85,8 +98,8 @@ export default function ProductDetail() {
 
           {/* Benefits */}
           <ul className="mb-6 space-y-2">
-            {product.benefits.map(b => (
-              <li key={b} className="flex items-center gap-2 text-sm text-gray-700">
+            {product.benefits.map((b, i) => (
+              <li key={i} className="flex items-center gap-2 text-sm text-gray-700">
                 <Check size={16} className="text-[#1e5054] flex-shrink-0" />
                 {b}
               </li>
@@ -113,9 +126,7 @@ export default function ProductDetail() {
             <button
               onClick={handleAdd}
               className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-full font-bold transition-all ${
-                added
-                  ? 'bg-green-500 text-white'
-                  : 'bg-[#54221b] text-white hover:bg-[#6b2b22]'
+                added ? 'bg-green-500 text-white' : 'bg-[#54221b] text-white hover:bg-[#6b2b22]'
               }`}
             >
               <ShoppingCart size={18} />
@@ -132,24 +143,28 @@ export default function ProductDetail() {
       </div>
 
       {/* Related */}
-      <div>
-        <h2 className="text-2xl font-black text-[#54221b] mb-6">You May Also Like</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-          {relatedProducts.map(p => (
-            <Link
-              key={p.id}
-              to={`/products/${p.id}`}
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all duration-200"
-            >
-              <img src={p.image} alt={p.name} className="w-full h-40 object-cover" />
-              <div className="p-3">
-                <p className="font-bold text-sm text-gray-900">{p.name}</p>
-                <p className="text-[#54221b] font-black text-sm mt-1">₹{p.price}</p>
-              </div>
-            </Link>
-          ))}
+      {related.length > 0 && (
+        <div>
+          <h2 className="text-2xl font-black text-[#54221b] mb-6">You May Also Like</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            {related.map(p => (
+              <Link
+                key={p.id}
+                to={`/products/${p.id}`}
+                className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all duration-200"
+              >
+                <div className="bg-[#faf7f5]">
+                  <img src={p.image} alt={p.name} className="w-full h-44 object-contain py-3 px-2" />
+                </div>
+                <div className="p-3">
+                  <p className="font-bold text-sm text-gray-900">{p.name}</p>
+                  <p className="text-[#54221b] font-black text-sm mt-1">₹{p.price}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </main>
   );
 }

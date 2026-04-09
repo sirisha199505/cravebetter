@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Zap, Shield, Leaf, Award, ArrowRight, Star, CheckCircle, Truck } from 'lucide-react';
+import { Zap, Shield, Leaf, Award, ArrowRight, Star } from 'lucide-react';
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { products } from '../data/products';
@@ -7,23 +7,23 @@ import { products } from '../data/products';
 const benefits = [
   {
     icon: <Zap size={22} />,
-    title: 'High Protein',
-    desc: '18–20g of premium whey protein per bar to power your muscles and speed up recovery.',
+    title: 'Rich in Protein',
+    desc: 'Packed with plant-based protein from Ragi and Peanuts to fuel your body and keep you full longer.',
   },
   {
     icon: <Shield size={22} />,
-    title: 'Zero Junk',
-    desc: 'No artificial colours, flavours, or preservatives. Every ingredient earns its place.',
+    title: 'Less Sugar',
+    desc: 'Sweetened naturally with Jaggery — no refined sugar, no artificial sweeteners, no guilt.',
   },
   {
     icon: <Leaf size={22} />,
-    title: 'Natural First',
-    desc: 'Crafted from wholesome, natural ingredients you can actually pronounce and trust.',
+    title: 'Less Fat',
+    desc: 'Made with wholesome Oats and Ragi, keeping fat content low so you can snack smarter.',
   },
   {
     icon: <Award size={22} />,
-    title: 'Athlete Tested',
-    desc: 'Trusted by gym-goers, MMA fighters, and sports enthusiasts across India.',
+    title: '100% Natural',
+    desc: 'No artificial colours, flavours, or preservatives. Every ingredient earns its place.',
   },
 ];
 
@@ -31,21 +31,21 @@ const testimonials = [
   {
     name: 'Arjun Sharma',
     role: 'Powerlifter, Mumbai',
-    text: 'Chocolate Peanut Butter is my go-to post-workout bar. 20g protein, incredible taste — I keep a box at the gym and one at home.',
+    text: 'The Classic Square is my go-to pre-workout snack. All natural, sweetened with jaggery — incredible taste and I feel great. I keep a box at the gym and one at home.',
     rating: 5,
     avatar: 'AS',
   },
   {
     name: 'Priya Menon',
     role: 'CrossFit Coach, Bangalore',
-    text: "Finally a protein bar that doesn't taste like cardboard. My entire class is hooked on the Salted Caramel flavour!",
+    text: "Finally a bar that doesn't taste like cardboard. My entire class is hooked on the Dark Choco Square — real ingredients, no junk!",
     rating: 5,
     avatar: 'PM',
   },
   {
     name: 'Rohan Desai',
     role: 'MMA Fighter, Pune',
-    text: 'We bulk order for our fight camp. Great pricing, great product, and the team at Crave Better is super responsive.',
+    text: 'We bulk order Crave Better for our fight camp. The Milk Choco Square is everyone\'s favourite. Great pricing and super responsive team.',
     rating: 5,
     avatar: 'RD',
   },
@@ -84,7 +84,7 @@ export default function Home() {
 
         {/* Transparent background watermark image */}
         <img
-          src="/main-image.png"
+          src="/main image 2.png"
           alt=""
           aria-hidden="true"
           className="absolute right-0 bottom-0 h-[80%] w-auto object-contain opacity-[0.08] pointer-events-none select-none z-0"
@@ -170,7 +170,7 @@ export default function Home() {
                 </div>
               </div> */}
               <img
-                src="/main-image.png"
+                src="/main image 2.png"
                 alt="Crave Better Protein Bars"
                 className="relative w-full object-contain drop-shadow-2xl"
                 onError={e => { e.target.src = '/bar1.png'; }}
@@ -190,8 +190,8 @@ export default function Home() {
       <section className="bg-white border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-5 py-8 sm:py-10 grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 text-center">
           {[
-            { value: '20g', label: 'Protein Per Bar', color: 'text-[#54221b]' },
-            { value: '5', label: 'Unique Flavours', color: 'text-[#2D6A4F]' },
+            { value: '5g', label: 'Protein Per Bar', color: 'text-[#54221b]' },
+            { value: '3', label: 'Unique Flavours', color: 'text-[#2D6A4F]' },
             { value: '100%', label: 'Natural Ingredients', color: 'text-[#54221b]' },
             { value: '10k+', label: 'Happy Athletes', color: 'text-[#2D6A4F]' },
           ].map(s => (
@@ -240,7 +240,7 @@ export default function Home() {
             <div>
               <span className="inline-block text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#2D6A4F] mb-2 sm:mb-3">Our Range</span>
               <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-gray-900">
-                5 Flavours.{' '}
+                3 Flavours.{' '}
                 <span className="text-[#54221b]">Endless Gains.</span>
               </h2>
             </div>
@@ -252,46 +252,62 @@ export default function Home() {
               <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-7">
             {products.map((p) => (
               <div
                 key={p.id}
-                className="group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
+                className="group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
               >
-                <div className="relative overflow-hidden bg-gray-50 h-32 sm:h-44">
+                {/* Rectangular rounded image */}
+                <div className="relative overflow-hidden bg-[#faf7f5] rounded-3xl mx-3 mt-3">
                   <img
                     src={p.image}
                     alt={p.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-56 sm:h-64 object-contain group-hover:scale-105 transition-transform duration-500 py-3 px-2"
                   />
                   {p.badge && (
                     <span
-                      className="absolute top-2 left-2 text-white text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-full"
+                      className="absolute top-3 left-3 text-white text-[9px] sm:text-[10px] font-black px-2.5 py-1 rounded-full shadow-md"
                       style={{ backgroundColor: p.badgeColor || '#54221b' }}
                     >
                       {p.badge}
                     </span>
                   )}
+                  {/* Highlight pills */}
+                  <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 px-2">
+                    <span className="bg-[#54221b]/90 text-white text-[9px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">
+                      Rich in Protein
+                    </span>
+                    <span className="bg-[#2D6A4F]/90 text-white text-[9px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">
+                      Less Sugar
+                    </span>
+                    <span className="bg-[#1e5054]/90 text-white text-[9px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">
+                      Less Fat
+                    </span>
+                  </div>
                 </div>
-                <div className="p-3 sm:p-4 flex flex-col flex-1">
-                  <p className="font-black text-gray-900 text-xs sm:text-sm mb-0.5 leading-snug">{p.name}</p>
-                  <p className="text-[10px] sm:text-xs text-gray-400 mb-2 sm:mb-3">{p.protein} Protein</p>
+
+                {/* Content */}
+                <div className="p-4 sm:p-5 flex flex-col flex-1">
+                  <p className="font-black text-gray-900 text-sm sm:text-base mb-1 leading-snug">{p.name}</p>
+                  <p className="text-[10px] sm:text-xs text-gray-400 mb-2">{p.weight} · {p.protein} Protein · {p.calories}</p>
+                  <p className="text-xs text-gray-500 leading-relaxed mb-4 line-clamp-2">{p.description}</p>
                   <div className="flex items-center justify-between mt-auto">
-                    <span className="text-sm sm:text-base font-black text-[#54221b]">₹{p.price}</span>
-                    <div className="flex gap-1 sm:gap-1.5">
+                    <span className="text-base sm:text-lg font-black text-[#54221b]">₹{p.price}</span>
+                    <div className="flex gap-1.5 sm:gap-2">
                       <button
                         onClick={() => handleQuickAdd(p)}
-                        className={`text-[10px] sm:text-xs font-bold px-2 sm:px-3 py-1 sm:py-1.5 rounded-full transition-all ${
+                        className={`text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-full transition-all ${
                           addedId === p.id ? 'bg-green-500 text-white' : 'bg-[#54221b] text-white hover:bg-[#6b2b22]'
                         }`}
                       >
-                        {addedId === p.id ? '✓' : '+'}
+                        {addedId === p.id ? '✓ Added' : '+ Cart'}
                       </button>
                       <Link
                         to={`/products/${p.id}`}
-                        className="text-[10px] sm:text-xs font-bold px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-[#2D6A4F] text-[#2D6A4F] hover:bg-[#2D6A4F] hover:text-white transition-all"
+                        className="text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-full border border-[#2D6A4F] text-[#2D6A4F] hover:bg-[#2D6A4F] hover:text-white transition-all"
                       >
-                        Info
+                        Details
                       </Link>
                     </div>
                   </div>
@@ -317,7 +333,7 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-10 relative">
             <div className="hidden sm:block absolute top-10 left-[20%] right-[20%] h-px bg-white/20" />
             {[
-              { step: '01', title: 'Browse & Pick', desc: 'Explore our 5 premium flavours and select your favourites with full nutritional info.' },
+              { step: '01', title: 'Browse & Pick', desc: 'Explore our 3 premium flavours and select your favourites with full nutritional info.' },
               { step: '02', title: 'Add to Cart', desc: 'Choose your quantity, add to cart, and sail through our quick checkout process.' },
               { step: '03', title: 'Delivered Fresh', desc: 'Your bars are packed and delivered straight to your door, fast and fresh.' },
             ].map((s) => (

@@ -19,7 +19,7 @@ export default function Cart() {
   const { isLoggedIn, userInfo, setShowAuthPopup } = useUserAuth();
 
   const [form, setForm] = useState({
-    customer_name: '', customer_phone: '',
+    customer_name: '', customer_phone: '', customer_email: '',
     address_flat: '', address_area: '', address_city: '', address_pin: '',
   });
   const [payMethod, setPayMethod] = useState('upi');
@@ -36,12 +36,18 @@ export default function Cart() {
       setShowAuthPopup(true);
       return;
     }
+    setForm(f => ({
+      ...f,
+      customer_name:  f.customer_name  || userInfo?.full_name    || '',
+      customer_phone: f.customer_phone || userInfo?.phone_number || '',
+      customer_email: f.customer_email || userInfo?.email        || '',
+    }));
     setStep('checkout');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const simulatePayment = async () => {
-    if (!form.customer_name || !form.customer_phone || !form.address_flat || !form.address_city || !form.address_pin) {
+    if (!form.customer_name || !form.customer_phone || !form.customer_email || !form.address_flat || !form.address_city || !form.address_pin) {
       setErrMsg('Please fill all required fields.');
       return;
     }
@@ -218,6 +224,14 @@ export default function Cart() {
                   <input
                     type="tel" name="customer_phone" value={form.customer_phone} onChange={handleChange}
                     placeholder="+91 98765 43210" required
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#54221b] focus:ring-1 focus:ring-[#54221b]"
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold text-gray-600 mb-1">Email Address *</label>
+                  <input
+                    type="email" name="customer_email" value={form.customer_email} onChange={handleChange}
+                    placeholder="john@example.com" required
                     className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#54221b] focus:ring-1 focus:ring-[#54221b]"
                   />
                 </div>
