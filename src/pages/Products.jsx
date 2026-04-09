@@ -1,19 +1,19 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Minus, ShoppingCart, Info } from 'lucide-react';
+import { Plus, Minus, Info } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { products } from '../data/products';
 
 function ProductCard({ product }) {
-  const { addToCart } = useCart();
-  const [qty, setQty] = useState(1);
-  const [added, setAdded] = useState(false);
+  const { addToCart, updateQty, removeFromCart, items } = useCart();
+  const cartItem = items.find(i => i.id === product.id);
+  const qty = cartItem?.qty || 0;
 
-  const handleAdd = () => {
-    addToCart(product, qty);
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1500);
-    setQty(1);
+  const handleAdd = () => addToCart(product, 1);
+  const handleIncrease = () => addToCart(product, 1);
+  const handleDecrease = () => {
+    if (qty === 1) removeFromCart(product.id);
+    else updateQty(product.id, qty - 1);
   };
 
   return (
@@ -55,42 +55,40 @@ function ProductCard({ product }) {
         </p>
         <p className="text-sm text-gray-500 leading-relaxed mb-3 line-clamp-2">{product.description}</p>
 
-        <div className="mt-auto">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xl font-black text-[#54221b]">₹{product.price}</span>
-            {/* Qty selector */}
-            <div className="flex items-center gap-2 bg-gray-50 rounded-full px-1 py-1">
-              <button
-                onClick={() => setQty(q => Math.max(1, q - 1))}
-                className="w-7 h-7 rounded-full bg-white shadow-sm flex items-center justify-center hover:bg-gray-100 transition-colors"
-              >
-                <Minus size={13} />
-              </button>
-              <span className="w-5 text-center text-sm font-bold">{qty}</span>
-              <button
-                onClick={() => setQty(q => q + 1)}
-                className="w-7 h-7 rounded-full bg-white shadow-sm flex items-center justify-center hover:bg-gray-100 transition-colors"
-              >
-                <Plus size={13} />
-              </button>
-            </div>
-          </div>
+        <div className="mt-auto flex items-center justify-between">
+          <span className="text-xl font-black text-[#54221b]">₹{product.price}</span>
 
-          <div className="flex gap-2">
-            <button
-              onClick={handleAdd}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-bold transition-all ${
-                added
-                  ? 'bg-green-500 text-white'
-                  : 'bg-[#54221b] text-white hover:bg-[#6b2b22]'
-              }`}
-            >
-              <ShoppingCart size={15} />
-              {added ? 'Added!' : 'Add to Cart'}
-            </button>
+          <div className="flex items-center gap-2">
+            {/* Add → stepper */}
+            {qty === 0 ? (
+              <button
+                onClick={handleAdd}
+                className="bg-[#54221b] text-white text-sm font-bold px-5 py-2 rounded-full hover:bg-[#6b2b22] transition-all"
+              >
+                Add
+              </button>
+            ) : (
+              <div className="flex items-center gap-1.5 bg-[#54221b] rounded-full px-1.5 py-1">
+                <button
+                  onClick={handleDecrease}
+                  className="w-7 h-7 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+                >
+                  <Minus size={13} className="text-white" />
+                </button>
+                <span className="w-5 text-center text-sm font-black text-white">{qty}</span>
+                <button
+                  onClick={handleIncrease}
+                  className="w-7 h-7 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+                >
+                  <Plus size={13} className="text-white" />
+                </button>
+              </div>
+            )}
+
+            {/* Know More */}
             <Link
               to={`/products/${product.id}`}
-              className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-full border border-[#1e5054] text-[#1e5054] text-sm font-bold hover:bg-[#1e5054] hover:text-white transition-colors"
+              className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-full border border-[#1e5054] text-[#1e5054] text-sm font-bold hover:bg-[#1e5054] hover:text-white transition-colors"
               title="Know More"
             >
               <Info size={15} />

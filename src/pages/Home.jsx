@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Zap, Shield, Leaf, Award, ArrowRight, Star } from 'lucide-react';
+import { Zap, Shield, Leaf, Award, ArrowRight, Star, Plus, Minus } from 'lucide-react';
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { products } from '../data/products';
@@ -62,13 +62,15 @@ function StarRating({ count = 5 }) {
 }
 
 export default function Home() {
-  const { addToCart } = useCart();
-  const [addedId, setAddedId] = useState(null);
+  const { addToCart, updateQty, removeFromCart, items } = useCart();
 
-  const handleQuickAdd = (product) => {
-    addToCart(product, 1);
-    setAddedId(product.id);
-    setTimeout(() => setAddedId(null), 1500);
+  const getQty = (id) => items.find(i => i.id === id)?.qty || 0;
+  const handleAdd = (p) => addToCart(p, 1);
+  const handleIncrease = (p) => addToCart(p, 1);
+  const handleDecrease = (p) => {
+    const q = getQty(p.id);
+    if (q === 1) removeFromCart(p.id);
+    else updateQty(p.id, q - 1);
   };
 
   return (
@@ -294,15 +296,31 @@ export default function Home() {
                   <p className="text-xs text-gray-500 leading-relaxed mb-4 line-clamp-2">{p.description}</p>
                   <div className="flex items-center justify-between mt-auto">
                     <span className="text-base sm:text-lg font-black text-[#54221b]">₹{p.price}</span>
-                    <div className="flex gap-1.5 sm:gap-2">
-                      <button
-                        onClick={() => handleQuickAdd(p)}
-                        className={`text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-full transition-all ${
-                          addedId === p.id ? 'bg-green-500 text-white' : 'bg-[#54221b] text-white hover:bg-[#6b2b22]'
-                        }`}
-                      >
-                        {addedId === p.id ? '✓ Added' : '+ Cart'}
-                      </button>
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      {getQty(p.id) === 0 ? (
+                        <button
+                          onClick={() => handleAdd(p)}
+                          className="text-xs font-bold px-4 py-1.5 rounded-full bg-[#54221b] text-white hover:bg-[#6b2b22] transition-all"
+                        >
+                          Add
+                        </button>
+                      ) : (
+                        <div className="flex items-center gap-1 bg-[#54221b] rounded-full px-1.5 py-1">
+                          <button
+                            onClick={() => handleDecrease(p)}
+                            className="w-6 h-6 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+                          >
+                            <Minus size={11} className="text-white" />
+                          </button>
+                          <span className="w-4 text-center text-xs font-black text-white">{getQty(p.id)}</span>
+                          <button
+                            onClick={() => handleIncrease(p)}
+                            className="w-6 h-6 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+                          >
+                            <Plus size={11} className="text-white" />
+                          </button>
+                        </div>
+                      )}
                       <Link
                         to={`/products/${p.id}`}
                         className="text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-full border border-[#2D6A4F] text-[#2D6A4F] hover:bg-[#2D6A4F] hover:text-white transition-all"
