@@ -1,3 +1,3 @@
-// In development: VITE_API_URL is not set, so API calls go to /api (proxied by Vite to localhost:9292)
-// In production on Render: VITE_API_URL = https://your-backend.onrender.com
+// In development: set VITE_API_URL in .env (cravebetter/.env)
+// In production on Render: add VITE_API_URL in Render dashboard → Environment
 export const API_BASE = `${import.meta.env.VITE_API_URL || ''}/api`;
