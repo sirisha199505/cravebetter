@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { X, User, Lock, Mail, Phone, Eye, EyeOff } from 'lucide-react';
 import { useUserAuth } from '../context/UserAuthContext';
 
-const API_BASE = '/api';
+import { API_BASE } from '../config';
 
 const inputCls =
   'w-full border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#54221b] focus:ring-1 focus:ring-[#54221b] transition-colors bg-white py-2.5';

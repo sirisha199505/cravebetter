@@ -13,7 +13,7 @@ const navItems = [
   { to: '/admin/bulk-orders', icon: <Users size={17} />,         label: 'Bulk Orders' },
 ];
 
-const API_BASE = '/api';
+import { API_BASE } from '../../config';
 
 function EditProfileModal({ onClose }) {
   const [form, setForm] = useState({ current_password: '', new_password: '', confirm_password: '' });

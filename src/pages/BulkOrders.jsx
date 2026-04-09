@@ -11,15 +11,13 @@ const targets = [
 
 const productOptions = [
   { value: '', label: 'Select a flavour...' },
-  { value: 'Chocolate Peanut Butter', label: 'Chocolate Peanut Butter — 20g protein' },
-  { value: 'Salted Caramel', label: 'Salted Caramel — 18g protein' },
-  { value: 'Dark Chocolate', label: 'Dark Chocolate — 20g protein' },
-  { value: 'Vanilla Almond', label: 'Vanilla Almond — 19g protein' },
-  { value: 'Mixed Berry', label: 'Mixed Berry — 18g protein' },
+  { value: 'Classic Square', label: 'Classic Square — ₹35 · 28g · 120 kcal' },
+  { value: 'Dark Choco Square', label: 'Dark Choco Square — ₹60 · 38g · 180 kcal' },
+  { value: 'Milk Choco Square', label: 'Milk Choco Square — ₹50 · 38g · 170 kcal' },
   { value: 'Assorted Mix', label: 'Assorted Mix (all flavours)' },
 ];
 
-const API_BASE = '/api';
+import { API_BASE } from '../config';
 
 export default function BulkOrders() {
   const { isLoggedIn, userInfo, setShowAuthPopup } = useUserAuth();

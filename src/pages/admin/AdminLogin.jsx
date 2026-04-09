@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Lock, Mail, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 
-const API_BASE = '/api';
+import { API_BASE } from '../../config';
 
 export default function AdminLogin() {
   const navigate = useNavigate();

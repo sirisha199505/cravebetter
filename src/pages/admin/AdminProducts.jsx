@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Plus, Edit2, Trash2, X, Check } from 'lucide-react';
 
-const API_BASE = '/api';
+import { API_BASE } from '../../config';
 function authHeader() {
   return {
     Authorization: `Bearer ${localStorage.getItem('cb_token')}`,

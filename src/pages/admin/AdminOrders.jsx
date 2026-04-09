@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 
-const API_BASE = '/api';
+import { API_BASE } from '../../config';
 function authHeader() {
   return { Authorization: `Bearer ${localStorage.getItem('cb_token')}`, 'Content-Type': 'application/json' };
 }

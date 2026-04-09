@@ -10,7 +10,7 @@ const PAYMENT_METHODS = [
   { id: 'cod', label: 'Cash on Delivery' },
 ];
 
-const API_BASE = '/api';
+import { API_BASE } from '../config';
 
 const DELIVERY_FEE_THRESHOLD = 500;
 
