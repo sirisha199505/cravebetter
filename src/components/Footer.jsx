@@ -67,7 +67,7 @@ export default function Footer() {
             rel="noopener noreferrer"
             className="text-xs text-red-300 hover:text-white transition-colors"
           >
-             Designed for Excellence by Srinishtha
+             Powered by Srinishtha Technologies LLP
           </a>
         </div>
       </div>

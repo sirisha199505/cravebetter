@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Trash2, Plus, Minus, ShoppingBag, CheckCircle, XCircle, Loader, LogIn, User } from 'lucide-react';
+import { Trash2, Plus, Minus, ShoppingBag, CheckCircle, XCircle, Loader } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { useUserAuth } from '../context/UserAuthContext';
+import { API_BASE } from '../config';
 
 const PAYMENT_METHODS = [
   { id: 'upi', label: 'UPI / QR' },
@@ -10,18 +10,17 @@ const PAYMENT_METHODS = [
   { id: 'cod', label: 'Cash on Delivery' },
 ];
 
-import { API_BASE } from '../config';
-
 const DELIVERY_FEE_THRESHOLD = 500;
 
 export default function Cart() {
   const { items, updateQty, removeFromCart, clearCart, subtotal, deliveryFee, total } = useCart();
-  const { isLoggedIn, userInfo, setShowAuthPopup } = useUserAuth();
 
   const [form, setForm] = useState({
     customer_name: '', customer_phone: '', customer_email: '',
-    address_flat: '', address_area: '', address_city: '', address_pin: '',
+    address_flat: '', address_area: '', address_city: '', address_state: '', address_pin: '',
   });
+  const [pinLoading, setPinLoading] = useState(false);
+  const [pinErr, setPinErr] = useState('');
   const [payMethod, setPayMethod] = useState('upi');
   const [step, setStep] = useState('cart'); // cart | checkout | payment | success | failed
   const [loading, setLoading] = useState(false);
@@ -30,18 +29,35 @@ export default function Cart() {
 
   const handleChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
 
+  const handlePinChange = async e => {
+    const pin = e.target.value.replace(/\D/g, '').slice(0, 6);
+    setForm(f => ({ ...f, address_pin: pin }));
+    setPinErr('');
+    if (pin.length === 6) {
+      setPinLoading(true);
+      try {
+        const res = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
+        const json = await res.json();
+        if (json?.[0]?.Status === 'Success' && json[0].PostOffice?.length > 0) {
+          const po = json[0].PostOffice[0];
+          setForm(f => ({
+            ...f,
+            address_city: po.District || po.Name || f.address_city,
+            address_state: po.State || f.address_state,
+          }));
+        } else {
+          setPinErr('Pincode not found. Please fill city & state manually.');
+        }
+      } catch {
+        setPinErr('Could not fetch pincode details. Please fill manually.');
+      } finally {
+        setPinLoading(false);
+      }
+    }
+  };
+
   const toCheckout = () => {
     if (items.length === 0) return;
-    if (!isLoggedIn) {
-      setShowAuthPopup(true);
-      return;
-    }
-    setForm(f => ({
-      ...f,
-      customer_name:  f.customer_name  || userInfo?.full_name    || '',
-      customer_phone: f.customer_phone || userInfo?.phone_number || '',
-      customer_email: f.customer_email || userInfo?.email        || '',
-    }));
     setStep('checkout');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -114,7 +130,7 @@ export default function Cart() {
         <h2 className="text-2xl font-black text-gray-900">Order Placed!</h2>
         {orderId && <p className="text-xs text-gray-400">Order ID: #{orderId}</p>}
         <p className="text-gray-500 max-w-sm">
-          Your order has been placed successfully. We'll notify you when it's dispatched.
+          Your order has been placed successfully. A confirmation has been sent to <span className="font-semibold text-gray-700">{form.customer_email}</span>.
         </p>
         <Link
           to="/products"
@@ -252,6 +268,20 @@ export default function Cart() {
                   />
                 </div>
                 <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1">PIN Code *</label>
+                  <div className="relative">
+                    <input
+                      type="text" name="address_pin" value={form.address_pin} onChange={handlePinChange}
+                      placeholder="400001" maxLength={6} required
+                      className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#54221b] focus:ring-1 focus:ring-[#54221b]"
+                    />
+                    {pinLoading && (
+                      <Loader size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 animate-spin" />
+                    )}
+                  </div>
+                  {pinErr && <p className="text-xs text-amber-600 mt-1">{pinErr}</p>}
+                </div>
+                <div>
                   <label className="block text-xs font-semibold text-gray-600 mb-1">City *</label>
                   <input
                     type="text" name="address_city" value={form.address_city} onChange={handleChange}
@@ -259,11 +289,11 @@ export default function Cart() {
                     className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#54221b] focus:ring-1 focus:ring-[#54221b]"
                   />
                 </div>
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1">PIN Code *</label>
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold text-gray-600 mb-1">State</label>
                   <input
-                    type="text" name="address_pin" value={form.address_pin} onChange={handleChange}
-                    placeholder="400001" maxLength={6} required
+                    type="text" name="address_state" value={form.address_state} onChange={handleChange}
+                    placeholder="Maharashtra"
                     className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#54221b] focus:ring-1 focus:ring-[#54221b]"
                   />
                 </div>
@@ -359,42 +389,14 @@ export default function Cart() {
               </p>
             )}
 
-            {/* Login prompt when not logged in */}
-            {!isLoggedIn && step === 'cart' && (
-              <div className="mt-4 bg-amber-50 border border-amber-100 rounded-2xl p-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <User size={14} className="text-amber-600" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-amber-800 mb-0.5">Login required to checkout</p>
-                    <p className="text-xs text-amber-600 leading-relaxed">You must be signed in to place an order.</p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Logged-in user badge */}
-            {isLoggedIn && step === 'cart' && (
-              <div className="mt-4 bg-green-50 border border-green-100 rounded-2xl px-4 py-2.5 flex items-center gap-2.5">
-                <div className="w-6 h-6 rounded-full bg-[#2D6A4F] text-white text-[10px] font-black flex items-center justify-center flex-shrink-0">
-                  {userInfo?.full_name?.[0]?.toUpperCase() || 'U'}
-                </div>
-                <p className="text-xs text-green-700 font-semibold truncate">
-                  Ordering as <span className="font-black">{userInfo?.full_name}</span>
-                </p>
-              </div>
-            )}
-
             <div className="mt-4 space-y-2">
               {step === 'cart' ? (
                 <>
                   <button
                     onClick={toCheckout}
-                    className="w-full bg-[#54221b] text-white font-bold py-3.5 rounded-full hover:bg-[#6b2b22] transition-colors text-sm flex items-center justify-center gap-2"
+                    className="w-full bg-[#54221b] text-white font-bold py-3.5 rounded-full hover:bg-[#6b2b22] transition-colors text-sm"
                   >
-                    {!isLoggedIn && <LogIn size={15} />}
-                    {isLoggedIn ? 'Proceed to Checkout' : 'Sign In to Checkout'}
+                    Proceed to Checkout
                   </button>
                   <Link to="/products" className="block text-center text-sm text-gray-400 hover:text-gray-600 py-2 transition-colors">
                     Continue Shopping

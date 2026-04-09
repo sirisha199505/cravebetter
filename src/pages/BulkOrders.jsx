@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Building2, Users, Dumbbell, Bus, CheckCircle, ChevronDown, LogIn } from 'lucide-react';
-import { useUserAuth } from '../context/UserAuthContext';
+import { Building2, Users, Dumbbell, Bus, Plane, CheckCircle, ChevronDown } from 'lucide-react';
 
 const targets = [
-  { icon: <Dumbbell size={22} className="text-[#54221b]" />, label: 'Gyms & Fitness Centres' },
-  { icon: <Users size={22} className="text-[#54221b]" />, label: 'Fight Events & MMA Clubs' },
-  { icon: <Bus size={22} className="text-[#54221b]" />, label: 'Bus & Travel Agencies' },
-  { icon: <Building2 size={22} className="text-[#54221b]" />, label: 'Corporate Wellness' },
+  { icon: <Dumbbell size={30} className="text-[#54221b]" />, label: 'Gyms & Fitness Centres' },
+  { icon: <Users size={30} className="text-[#54221b]" />, label: 'Fight Events & MMA Clubs' },
+  { icon: <Bus size={30} className="text-[#54221b]" />, label: 'Bus & Travel Agencies' },
+  { icon: <Plane size={30} className="text-[#54221b]" />, label: 'Air Travels' },
+  { icon: <Building2 size={30} className="text-[#54221b]" />, label: 'Corporate Wellness' },
 ];
 
 const productOptions = [
@@ -20,7 +20,6 @@ const productOptions = [
 import { API_BASE } from '../config';
 
 export default function BulkOrders() {
-  const { isLoggedIn, userInfo, setShowAuthPopup } = useUserAuth();
   const [form, setForm] = useState({
     business_name: '',
     contact_name: '',
@@ -39,10 +38,6 @@ export default function BulkOrders() {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    if (!isLoggedIn) {
-      setShowAuthPopup(true);
-      return;
-    }
     if (!form.business_name || !form.contact_phone || !form.quantity) {
       setErrMsg('Please fill in Business Name, Phone, and Quantity.');
       return;
@@ -86,10 +81,10 @@ export default function BulkOrders() {
       </div>
 
       {/* Target customers */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-12">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 mb-12">
         {targets.map(t => (
           <div key={t.label} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-5 text-center hover:shadow-md transition-shadow">
-            <div className="w-10 h-10 sm:w-11 sm:h-11 bg-red-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+            <div className="w-16 h-16 sm:w-18 sm:h-18 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-3">
               {t.icon}
             </div>
             <p className="text-xs font-semibold text-gray-700 leading-snug">{t.label}</p>
@@ -219,31 +214,12 @@ export default function BulkOrders() {
 
               {errMsg && <p className="text-sm text-red-600 bg-red-50 rounded-xl px-4 py-2.5">{errMsg}</p>}
 
-              {!isLoggedIn && (
-                <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-center gap-2">
-                  <LogIn size={15} className="text-amber-600 flex-shrink-0" />
-                  <p className="text-xs text-amber-700 font-medium">
-                    Please <button type="button" onClick={() => setShowAuthPopup(true)} className="underline font-bold">sign in</button> to submit a bulk order request.
-                  </p>
-                </div>
-              )}
-
-              {isLoggedIn && userInfo && (
-                <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-2.5 flex items-center gap-2">
-                  <CheckCircle size={14} className="text-green-600 flex-shrink-0" />
-                  <p className="text-xs text-green-700 font-medium">Submitting as <span className="font-bold">{userInfo.full_name || userInfo.email}</span></p>
-                </div>
-              )}
-
               <button
                 type="submit"
                 disabled={status === 'loading'}
-                className="w-full bg-[#54221b] text-white font-bold py-3.5 rounded-full hover:bg-[#6b2b22] transition-colors disabled:opacity-60 text-sm flex items-center justify-center gap-2"
+                className="w-full bg-[#54221b] text-white font-bold py-3.5 rounded-full hover:bg-[#6b2b22] transition-colors disabled:opacity-60 text-sm"
               >
-                {!isLoggedIn
-                  ? <><LogIn size={15} /> Sign In to Submit</>
-                  : status === 'loading' ? 'Submitting...' : 'Request Bulk Order'
-                }
+                {status === 'loading' ? 'Submitting...' : 'Request Bulk Order'}
               </button>
             </form>
           )}
