@@ -262,9 +262,9 @@ export default function BulkOrders() {
           </div>
 
           <div className="bg-[#1e5054] text-white rounded-2xl p-6">
-            <h4 className="font-bold mb-2 text-sm">India Fights Partnership</h4>
+            <h4 className="font-bold mb-2 text-sm">Protein-Powered Nutrition</h4>
             <p className="text-sm text-teal-100 leading-relaxed">
-              We proudly supply protein bars to fight events across India. Power up your athletes — Crave Better Foods is the official nutrition partner for major fight circuits.
+              We deliver clean, high-performance protein bars designed to support strength, endurance, and recovery. Crafted for active lifestyles, Crave Better Foods helps you fuel better, every day.
             </p>
           </div>
         </div>

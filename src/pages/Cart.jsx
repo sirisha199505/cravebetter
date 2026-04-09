@@ -1,8 +1,14 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Trash2, Plus, Minus, ShoppingBag, CheckCircle, XCircle, Loader } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 import { useCart } from '../context/CartContext';
 import { API_BASE } from '../config';
+
+const EMAILJS_SERVICE  = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+const EMAILJS_TEMPLATE = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+const EMAILJS_KEY      = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+const ADMIN_EMAIL      = 'luckysirisha1@gmail.com';
 
 const PAYMENT_METHODS = [
   { id: 'upi', label: 'UPI / QR' },
@@ -10,7 +16,7 @@ const PAYMENT_METHODS = [
   { id: 'cod', label: 'Cash on Delivery' },
 ];
 
-const DELIVERY_FEE_THRESHOLD = 500;
+const DELIVERY_FEE_THRESHOLD = 1500;
 
 export default function Cart() {
   const { items, updateQty, removeFromCart, clearCart, subtotal, deliveryFee, total } = useCart();
@@ -62,6 +68,52 @@ export default function Cart() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const sendOrderEmails = async (orderData) => {
+    const itemsList = orderData.items
+      .map(i => `${i.name} x${i.qty} — ₹${i.price * i.qty}`)
+      .join('\n');
+
+    const address = [
+      orderData.address_flat,
+      orderData.address_area,
+      orderData.address_city,
+      orderData.address_state,
+      orderData.address_pin,
+    ].filter(Boolean).join(', ');
+
+    const templateParams = {
+      order_id:       orderData.orderId || '',
+      customer_name:  orderData.customer_name,
+      customer_phone: orderData.customer_phone,
+      customer_email: orderData.customer_email,
+      address,
+      items_list:     itemsList,
+      item_total:     `₹${orderData.item_total}`,
+      delivery_fee:   orderData.delivery_fee === 0 ? 'FREE' : `₹${orderData.delivery_fee}`,
+      platform_fee:   `₹${orderData.platform_fee}`,
+      grand_total:    `₹${orderData.grand_total}`,
+      payment_method: orderData.payment_method?.toUpperCase(),
+    };
+
+    try {
+      // Email to customer
+      await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
+        ...templateParams,
+        to_email: orderData.customer_email,
+        to_name:  orderData.customer_name,
+      }, EMAILJS_KEY);
+
+      // Email to admin
+      await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
+        ...templateParams,
+        to_email: ADMIN_EMAIL,
+        to_name:  'Crave Better Admin',
+      }, EMAILJS_KEY);
+    } catch (err) {
+      console.error('EmailJS error:', err);
+    }
+  };
+
   const simulatePayment = async () => {
     if (!form.customer_name || !form.customer_phone || !form.customer_email || !form.address_flat || !form.address_city || !form.address_pin) {
       setErrMsg('Please fill all required fields.');
@@ -100,7 +152,17 @@ export default function Cart() {
       });
       const json = await res.json();
       if (json.status === 'success') {
-        setOrderId(json.data?.id);
+        const oid = json.data?.id;
+        setOrderId(oid);
+        await sendOrderEmails({
+          ...form,
+          orderId:      oid,
+          items,
+          item_total:   subtotal,
+          delivery_fee: deliveryFee,
+          platform_fee: 5,
+          grand_total:  total + 5,
+        });
         clearCart();
         setStep('success');
       } else {

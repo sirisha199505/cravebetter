@@ -17,14 +17,14 @@ export default function Navbar() {
   const isActive = (to) => pathname === to;
 
   return (
-    <>
+    <div className="sticky top-0 z-50">
       {/* Announcement bar */}
       <div className="bg-[#54221b] text-white text-center text-[10px] sm:text-xs font-semibold py-1.5 sm:py-2 tracking-wide px-4">
         🚚 Free delivery on orders above ₹1500 &nbsp;·&nbsp; 5g protein per bar &nbsp;·&nbsp; No artificial additives
       </div>
 
-      <nav className="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-18 flex items-center justify-between">
+      <nav className="bg-white shadow-sm border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 sm:h-14 flex items-center justify-between">
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 sm:gap-3 flex-shrink-0">
@@ -115,6 +115,6 @@ export default function Navbar() {
           </div>
         )}
       </nav>
-    </>
+    </div>
   );
 }
