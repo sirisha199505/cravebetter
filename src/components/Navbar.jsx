@@ -29,15 +29,15 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-1 sm:gap-3 flex-shrink-0">
             <img
-              src="/new logo.png"
+              src="/new logo2.png"
               alt=""
               aria-hidden="true"
               className="h-12 wsm:h-14 sm:w-14 object-contain flex-shrink-0"
             />
             <img
-              src="/icon.png"
+              src="/icon2.png"
               alt="Crave Better"
-              className="h-10 w-20 sm:h-12 w-auto max-w-[150px] sm:max-w-[210px] object-contain flex-shrink-0"
+              className="h-10 sm:h-12 w-auto max-w-[600px] sm:max-w-[400px] object-contain flex-shrink-0"
             />
           </Link>
 
@@ -47,9 +47,8 @@ export default function Navbar() {
               <Link
                 key={l.to}
                 to={l.to}
-                className={`relative text-sm lg:text-base font-semibold transition-colors pb-1 group ${
-                  isActive(l.to) ? 'text-[#2D6A4F]' : 'text-gray-700 hover:text-[#2D6A4F]'
-                }`}
+                className={`relative text-sm lg:text-base font-semibold transition-colors pb-1 group ${isActive(l.to) ? 'text-[#2D6A4F]' : 'text-gray-700 hover:text-[#2D6A4F]'
+                  }`}
               >
                 {l.label}
                 <span className={`absolute bottom-0 left-0 h-0.5 bg-[#2D6A4F] transition-all duration-300 ${isActive(l.to) ? 'w-full' : 'w-0 group-hover:w-full'}`} />
@@ -96,11 +95,10 @@ export default function Navbar() {
                 key={l.to}
                 to={l.to}
                 onClick={() => setOpen(false)}
-                className={`text-sm font-semibold px-3 py-2.5 rounded-xl transition-colors ${
-                  isActive(l.to)
+                className={`text-sm font-semibold px-3 py-2.5 rounded-xl transition-colors ${isActive(l.to)
                     ? 'bg-[#2D6A4F]/10 text-[#2D6A4F]'
                     : 'text-gray-700 hover:bg-gray-50 hover:text-[#2D6A4F]'
-                }`}
+                  }`}
               >
                 {l.label}
               </Link>

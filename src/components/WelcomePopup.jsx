@@ -32,7 +32,7 @@ export default function WelcomePopup() {
           <div className="relative flex items-center justify-center gap-3 mb-5">
             <div className="w-12 h-12 rounded-2xl bg-white/15 flex items-center justify-center flex-shrink-0">
               <img
-                src="/new logo.png"
+                src="/new logo2.png"
                 alt="Crave Better"
                 className="h-9 w-9 object-contain"
                 onError={e => { e.target.style.display = 'none'; }}
