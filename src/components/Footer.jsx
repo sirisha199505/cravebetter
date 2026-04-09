@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {/* Brand */}
           <div>
-            <img src="/logo.png" alt="Crave Better Foods" className="h-12 w-auto object-contain mb-4 brightness-0 invert" />
+            <img src="/logo.png" alt="Crave Better Foods" className="h-12 w-auto object-contain" />
             <p className="text-sm text-red-100 leading-relaxed">
               Fuel your ambition with protein bars crafted for champions. No compromise. Better taste. Better you.
             </p>
@@ -50,7 +50,7 @@ export default function Footer() {
                 </a>
               </li>
               <li className="flex items-center gap-2 text-sm text-red-100">
-                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y1="6.5" y2="6.5" /></svg>
                 <a href="#" className="hover:text-white transition-colors">
                   @cravebetterfoods
                 </a>
@@ -59,11 +59,16 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-red-900 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="border-t border-red-900 mt-6 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-red-200">&copy; {new Date().getFullYear()} Crave Better Foods. All rights reserved.</p>
-          <Link to="/admin" className="text-xs text-red-300 hover:text-white transition-colors">
-            Admin Panel
-          </Link>
+          <a
+            href="https://www.srinishtha.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-red-300 hover:text-white transition-colors"
+          >
+             Designed for Excellence by Srinishtha
+          </a>
         </div>
       </div>
     </footer>

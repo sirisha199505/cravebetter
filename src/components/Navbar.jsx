@@ -39,7 +39,7 @@ export default function Navbar() {
     <>
       {/* Announcement bar */}
       <div className="bg-[#54221b] text-white text-center text-[10px] sm:text-xs font-semibold py-1.5 sm:py-2 tracking-wide px-4">
-        🚚 Free delivery on orders above ₹500 &nbsp;·&nbsp; 20g protein per bar &nbsp;·&nbsp; No artificial additives
+        🚚 Free delivery on orders above ₹500 &nbsp;·&nbsp; 28g protein per bar &nbsp;·&nbsp; No artificial additives
       </div>
 
       <nav className="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100">
