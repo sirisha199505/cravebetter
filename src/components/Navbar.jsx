@@ -35,7 +35,7 @@ export default function Navbar() {
               className="h-12 wsm:h-14 sm:w-14 object-contain flex-shrink-0"
             />
             <img
-              src="/icon2.png"
+              src="/cravebetter.png"
               alt="Crave Better"
               className="h-10 sm:h-12 w-auto max-w-[600px] sm:max-w-[400px] object-contain flex-shrink-0"
             />
