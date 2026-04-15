@@ -11,6 +11,7 @@ import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
 import BulkOrders from './pages/BulkOrders';
 import Cart from './pages/Cart';
+import OurStory from './pages/OurStory';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -47,6 +48,7 @@ export default function App() {
             <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
             <Route path="/products" element={<PublicLayout><Products /></PublicLayout>} />
             <Route path="/products/:id" element={<PublicLayout><ProductDetail /></PublicLayout>} />
+            <Route path="/our-story" element={<PublicLayout><OurStory /></PublicLayout>} />
             <Route path="/bulk-orders" element={<PublicLayout><BulkOrders /></PublicLayout>} />
             <Route path="/cart" element={<PublicLayout><Cart /></PublicLayout>} />
 

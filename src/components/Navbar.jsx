@@ -11,6 +11,7 @@ export default function Navbar() {
   const links = [
     { to: '/', label: 'Home' },
     { to: '/products', label: 'Products' },
+    { to: '/our-story', label: 'Our Story' },
     { to: '/bulk-orders', label: 'Bulk Orders' },
   ];
 
@@ -20,7 +21,7 @@ export default function Navbar() {
     <div className="sticky top-0 z-50">
       {/* Announcement bar */}
       <div className="bg-[#54221b] text-white text-center text-[10px] sm:text-xs font-semibold py-1.5 sm:py-2 tracking-wide px-4">
-        🚚 Free delivery on orders above ₹1500 &nbsp;·&nbsp; 5g protein per bar &nbsp;·&nbsp; No artificial additives
+        🚚 Free delivery above ₹599 &nbsp;·&nbsp; Crunchy. Rich. Actually Good For You. &nbsp;·&nbsp; No artificial anything.
       </div>
 
       <nav className="bg-white shadow-sm border-b border-gray-100">
@@ -29,14 +30,8 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-1 sm:gap-3 flex-shrink-0">
             <img
-              src="/new logo2.png"
-              alt=""
-              aria-hidden="true"
-              className="h-12 wsm:h-14 sm:w-14 object-contain flex-shrink-0"
-            />
-            <img
               src="/cravebetter.png"
-              alt="Crave Better"
+              alt="Crave Better Foods"
               className="h-10 sm:h-12 w-auto max-w-[600px] sm:max-w-[400px] object-contain flex-shrink-0"
             />
           </Link>

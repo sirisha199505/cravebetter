@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { Building2, Users, Dumbbell, Bus, Plane, CheckCircle, ChevronDown } from 'lucide-react';
 
 const targets = [
-  { icon: <Dumbbell size={30} className="text-[#54221b]" />, label: 'Gyms & Fitness Centres' },
-  { icon: <Users size={30} className="text-[#54221b]" />, label: 'Fight Events & MMA Clubs' },
-  { icon: <Bus size={30} className="text-[#54221b]" />, label: 'Bus & Travel Agencies' },
-  { icon: <Plane size={30} className="text-[#54221b]" />, label: 'Air Travels' },
-  { icon: <Building2 size={30} className="text-[#54221b]" />, label: 'Corporate Wellness' },
+  { icon: <Building2 size={30} className="text-[#54221b]" />, label: 'Corporate Offices' },
+  { icon: <Users size={30} className="text-[#54221b]" />, label: 'Schools & Colleges' },
+  { icon: <Dumbbell size={30} className="text-[#54221b]" />, label: 'Gyms & Wellness Centres' },
+  { icon: <Bus size={30} className="text-[#54221b]" />, label: 'Travel & Hospitality' },
+  { icon: <Plane size={30} className="text-[#54221b]" />, label: 'Events & Gifting' },
 ];
 
 const productOptions = [
@@ -76,7 +76,7 @@ export default function BulkOrders() {
           Bulk <span className="text-[#54221b]">Orders</span>
         </h1>
         <p className="text-gray-500 max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
-          Get premium protein bars at special bulk pricing. Perfect for gyms, fight events, travel agencies, and corporate teams.
+          Get Crave Better Squares at special bulk pricing. Perfect for offices, schools, events, and anyone who wants to offer a snack that's actually good.
         </p>
       </div>
 
@@ -262,9 +262,9 @@ export default function BulkOrders() {
           </div>
 
           <div className="bg-[#1e5054] text-white rounded-2xl p-6">
-            <h4 className="font-bold mb-2 text-sm">Protein-Powered Nutrition</h4>
+            <h4 className="font-bold mb-2 text-sm">Why Crave Better?</h4>
             <p className="text-sm text-teal-100 leading-relaxed">
-              We deliver clean, high-performance protein bars designed to support strength, endurance, and recovery. Crafted for active lifestyles, Crave Better Foods helps you fuel better, every day.
+              Made with Ragi, Peanuts, Oats and Jaggery — a real chocolate alternative your customers will actually enjoy. No refined sugar, no artificial additives, no guilt. Taste and health, together.
             </p>
           </div>
         </div>
