@@ -30,7 +30,7 @@ export function CartProvider({ children }) {
 
   const itemCount = items.reduce((sum, i) => sum + i.qty, 0);
   const subtotal = items.reduce((sum, i) => sum + i.price * i.qty, 0);
-  const deliveryFee = subtotal > 0 ? (subtotal >= 1500 ? 0 : 49) : 0;
+  const deliveryFee = subtotal > 0 ? (subtotal >= 599 ? 0 : 49) : 0;
   const total = subtotal + deliveryFee;
 
   return (

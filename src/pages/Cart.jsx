@@ -16,7 +16,7 @@ const PAYMENT_METHODS = [
   { id: 'cod', label: 'Cash on Delivery' },
 ];
 
-const DELIVERY_FEE_THRESHOLD = 1500;
+const DELIVERY_FEE_THRESHOLD = 599;
 
 export default function Cart() {
   const { items, updateQty, removeFromCart, clearCart, subtotal, deliveryFee, total } = useCart();
@@ -230,7 +230,7 @@ export default function Cart() {
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-5 px-4 text-center">
         <ShoppingBag size={56} className="text-gray-200" />
         <h2 className="text-xl font-bold text-gray-700">Your cart is empty</h2>
-        <p className="text-gray-400 text-sm">Add some protein bars and fuel up!</p>
+        <p className="text-gray-400 text-sm">Add some chocolate squares to get started!</p>
         <Link
           to="/products"
           className="bg-[#54221b] text-white font-bold px-8 py-3 rounded-full hover:bg-[#6b2b22] transition-colors"
