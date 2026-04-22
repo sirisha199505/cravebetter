@@ -54,16 +54,16 @@ export default function Footer() {
                   <a href="tel:+918008804997" className="block hover:text-white transition-colors">+91 8008804997</a>
                 </div>
               </li>
-              <li className="flex items-center gap-2 text-sm text-red-100">
+              {/* <li className="flex items-center gap-2 text-sm text-red-100">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
                 <a href="#" className="hover:text-white transition-colors">@cravebetter4u</a>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>
 
         <div className="border-t border-red-900 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-red-200">&copy; {new Date().getFullYear()} Crave Better Foods. All rights reserved.</p>
+          <p className="text-xs text-red-200">&copy; {new Date().getFullYear()} Crave Better Foods. All Rights Reserved.</p>
           <a
             href="https://www.srinishtha.com"
             target="_blank"

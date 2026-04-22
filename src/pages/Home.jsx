@@ -275,7 +275,7 @@ export default function Home() {
               <div className="text-3xl sm:text-4xl mb-3">🌾</div>
               <p className="text-white font-black text-base sm:text-lg mb-1">Health Bar</p>
               <p className="text-gray-400 text-sm">Good for you.</p>
-              <p className="text-yellow-400 text-sm font-semibold mt-1">Tastes like cardboard.</p>
+              <p className="text-yellow-400 text-sm font-semibold mt-1">Made to Crave.</p>
             </div>
           </div>
 

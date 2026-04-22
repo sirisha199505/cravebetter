@@ -115,8 +115,8 @@ export default function Cart() {
   };
 
   const simulatePayment = async () => {
-    if (!form.customer_name || !form.customer_phone || !form.customer_email || !form.address_flat || !form.address_city || !form.address_pin) {
-      setErrMsg('Please fill all required fields.');
+    if (!form.customer_name || !form.customer_phone || !form.customer_email || !form.address_flat || !form.address_area || !form.address_city || !form.address_pin) {
+      setErrMsg('Please fill all required fields (marked *).');
       return;
     }
     setErrMsg('');
@@ -322,10 +322,10 @@ export default function Cart() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1">Area / Street</label>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1">Area / Street *</label>
                   <input
                     type="text" name="address_area" value={form.address_area} onChange={handleChange}
-                    placeholder="MG Road, Andheri West"
+                    placeholder="MG Road, Andheri West" required
                     className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#54221b] focus:ring-1 focus:ring-[#54221b]"
                   />
                 </div>
