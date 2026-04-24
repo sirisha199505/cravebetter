@@ -13,7 +13,7 @@ const productOptions = [
   { value: '', label: 'Select a flavour...' },
   { value: 'Classic Square', label: 'Classic Square — ₹35 · 28g · 120 kcal' },
   { value: 'Dark Choco Square', label: 'Dark Choco Square — ₹60 · 38g · 180 kcal' },
-  { value: 'Milk Choco Square', label: 'Milk Choco Square — ₹50 · 38g · 170 kcal' },
+  { value: 'milk choco square1', label: 'milk choco square1 — ₹50 · 38g · 170 kcal' },
   { value: 'Assorted Mix', label: 'Assorted Mix (all flavours)' },
 ];
 

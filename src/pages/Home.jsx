@@ -84,7 +84,7 @@ const testimonials = [
   {
     name: 'Rohan Desai',
     role: 'Business Owner, Pune',
-    text: "We bulk order for the whole office now. The Milk Choco Square is gone within a day. Everyone assumes it's a regular chocolate — until they read the label.",
+    text: "We bulk order for the whole office now. The milk choco square1 is gone within a day. Everyone assumes it's a regular chocolate — until they read the label.",
     rating: 5,
     avatar: 'RD',
   },
@@ -133,7 +133,7 @@ export default function Home() {
         <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full border border-white/5 z-0" />
         <div className="absolute -left-12 bottom-16 w-60 h-60 rounded-full bg-[#2D6A4F]/15 blur-3xl z-0" />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-16 sm:py-24 md:py-28 w-full grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12 items-center">
+        <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 pt-8 sm:pt-12 md:pt-14 pb-16 sm:pb-24 md:pb-28 w-full grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12 items-center">
 
           {/* Text */}
           <div className="text-center md:text-left">
@@ -210,7 +210,7 @@ export default function Home() {
           </div>
 
           {/* Image */}
-          <div className="flex justify-center items-center mt-2 md:mt-0">
+          <div className="flex justify-center items-center mt-2 md:-mt-14">
             <div className="relative w-full max-w-[260px] sm:max-w-sm md:max-w-lg mx-auto">
               <div className="absolute inset-8 bg-red-400/20 rounded-full blur-3xl" />
               <img

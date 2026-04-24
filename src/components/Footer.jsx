@@ -36,6 +36,26 @@ export default function Footer() {
             </ul>
           </div>
 
+          {/* Policies */}
+          <div>
+            <h4 className="font-bold text-sm uppercase tracking-widest mb-4 text-red-200">Policies</h4>
+            <ul className="space-y-2">
+              {[
+                { to: '/privacy-policy', label: 'Privacy Policy' },
+                { to: '/terms-and-conditions', label: 'Terms & Conditions' },
+                { to: '/cancellation-refund-policy', label: 'Cancellation & Refund' },
+                { to: '/shipping-policy', label: 'Shipping Policy' },
+                { to: '/contact-us', label: 'Contact Us' },
+              ].map(l => (
+                <li key={l.to}>
+                  <Link to={l.to} className="text-sm text-red-100 hover:text-white transition-colors">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
           {/* Contact */}
           <div>
             <h4 className="font-bold text-sm uppercase tracking-widest mb-4 text-red-200">Contact Us</h4>

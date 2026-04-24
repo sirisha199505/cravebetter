@@ -3,7 +3,7 @@ export const products = [
     id: 1,
     name: "Classic Square",
     price: 35,
-    image: "/classic%20square.png",
+    image: "/classic%20square1.png",
     badge: "Best Seller",
     badgeColor: "#54221b",
     protein: "5g",
@@ -51,7 +51,7 @@ export const products = [
   },
   {
     id: 3,
-    name: "milk choco square1",
+    name: "milk choco square",
     price: 50,
     image: "/milk%20choco%20square1.png",
     badge: "New",

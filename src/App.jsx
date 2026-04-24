@@ -12,12 +12,18 @@ import ProductDetail from './pages/ProductDetail';
 import BulkOrders from './pages/BulkOrders';
 import Cart from './pages/Cart';
 import OurStory from './pages/OurStory';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsAndConditions from './pages/TermsAndConditions';
+import CancellationRefundPolicy from './pages/CancellationRefundPolicy';
+import ShippingPolicy from './pages/ShippingPolicy';
+import ContactUs from './pages/ContactUs';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminBulkOrders from './pages/admin/AdminBulkOrders';
+import AdminPageContents from './pages/admin/AdminPageContents';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -51,6 +57,11 @@ export default function App() {
             <Route path="/our-story" element={<PublicLayout><OurStory /></PublicLayout>} />
             <Route path="/bulk-orders" element={<PublicLayout><BulkOrders /></PublicLayout>} />
             <Route path="/cart" element={<PublicLayout><Cart /></PublicLayout>} />
+            <Route path="/privacy-policy" element={<PublicLayout><PrivacyPolicy /></PublicLayout>} />
+            <Route path="/terms-and-conditions" element={<PublicLayout><TermsAndConditions /></PublicLayout>} />
+            <Route path="/cancellation-refund-policy" element={<PublicLayout><CancellationRefundPolicy /></PublicLayout>} />
+            <Route path="/shipping-policy" element={<PublicLayout><ShippingPolicy /></PublicLayout>} />
+            <Route path="/contact-us" element={<PublicLayout><ContactUs /></PublicLayout>} />
 
             {/* Admin routes */}
             <Route path="/admin" element={<AdminLogin />} />
@@ -59,6 +70,7 @@ export default function App() {
               <Route path="products" element={<AdminProducts />} />
               <Route path="orders" element={<AdminOrders />} />
               <Route path="bulk-orders" element={<AdminBulkOrders />} />
+              <Route path="page-contents" element={<AdminPageContents />} />
             </Route>
           </Routes>
         </BrowserRouter>
