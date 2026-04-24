@@ -51,9 +51,9 @@ export const products = [
   },
   {
     id: 3,
-    name: "Milk Choco Square",
+    name: "milk choco square1",
     price: 50,
-    image: "/milk%20choco%20square.png",
+    image: "/milk%20choco%20square1.png",
     badge: "New",
     badgeColor: "#7b3f00",
     protein: "5g",
