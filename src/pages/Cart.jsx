@@ -90,7 +90,6 @@ export default function Cart() {
       items_list:     itemsList,
       item_total:     `₹${orderData.item_total}`,
       delivery_fee:   orderData.delivery_fee === 0 ? 'FREE' : `₹${orderData.delivery_fee}`,
-      platform_fee:   `₹${orderData.platform_fee}`,
       grand_total:    `₹${orderData.grand_total}`,
       payment_method: orderData.payment_method?.toUpperCase(),
     };
@@ -141,8 +140,7 @@ export default function Cart() {
         items: items.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty, image: i.image })),
         item_total: subtotal,
         delivery_fee: deliveryFee,
-        platform_fee: 5,
-        grand_total: total + 5,
+        grand_total: total,
       };
 
       const res = await fetch(`${API_BASE}/orders`, {
@@ -152,7 +150,7 @@ export default function Cart() {
       });
       const json = await res.json();
       if (json.status === 'success') {
-        const oid = json.data?.id;
+        const oid = json.data?.order_number;
         setOrderId(oid);
         await sendOrderEmails({
           ...form,
@@ -160,8 +158,7 @@ export default function Cart() {
           items,
           item_total:   subtotal,
           delivery_fee: deliveryFee,
-          platform_fee: 5,
-          grand_total:  total + 5,
+          grand_total:  total,
         });
         clearCart();
         setStep('success');
@@ -437,11 +434,8 @@ export default function Cart() {
                   {deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`}
                 </span>
               </div>
-              <div className="flex justify-between text-sm text-gray-500">
-                <span>Platform Fee</span><span>₹5</span>
-              </div>
               <div className="flex justify-between font-black text-gray-900 pt-2 border-t border-gray-100">
-                <span>Total</span><span>₹{total + 5}</span>
+                <span>Total</span><span>₹{total}</span>
               </div>
             </div>
 
@@ -471,7 +465,7 @@ export default function Cart() {
                     disabled={loading}
                     className="w-full bg-[#54221b] text-white font-bold py-3.5 rounded-full hover:bg-[#6b2b22] transition-colors text-sm disabled:opacity-60"
                   >
-                    {loading ? 'Processing…' : `Pay ₹${total + 5}`}
+                    {loading ? 'Processing…' : `Pay ₹${total}`}
                   </button>
                   <button
                     onClick={() => { setStep('cart'); setErrMsg(''); }}
