@@ -174,11 +174,18 @@ export default function Cart() {
     }
 
     try {
-      // Step 1: create Razorpay order on backend
+      // Step 1: create Razorpay order + pending DB order on backend
       const createRes  = await fetch(`${API_BASE}/payments/create-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: total * 100 }), // paise
+        body: JSON.stringify({
+          amount:         total * 100, // paise
+          ...form,
+          items:          items.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty, image: i.image })),
+          item_total:     subtotal,
+          delivery_fee:   deliveryFee,
+          grand_total:    total,
+        }),
       });
       const createJson = await createRes.json();
       if (createJson.status !== 'success') {
@@ -213,12 +220,6 @@ export default function Cart() {
                 razorpay_order_id:   response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature:  response.razorpay_signature,
-                ...form,
-                payment_method: 'online',
-                items: items.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty, image: i.image })),
-                item_total:   subtotal,
-                delivery_fee: deliveryFee,
-                grand_total:  total,
               }),
             });
             const verifyJson = await verifyRes.json();
