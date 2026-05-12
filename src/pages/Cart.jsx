@@ -8,15 +8,25 @@ import { API_BASE } from '../config';
 const EMAILJS_SERVICE  = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const EMAILJS_TEMPLATE = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
 const EMAILJS_KEY      = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+const RZP_KEY_ID       = import.meta.env.VITE_RAZORPAY_KEY_ID;
 const ADMIN_EMAIL      = 'luckysirisha1@gmail.com';
 
 const PAYMENT_METHODS = [
-  { id: 'upi', label: 'UPI / QR' },
-  { id: 'card', label: 'Credit / Debit Card' },
-  { id: 'cod', label: 'Cash on Delivery' },
+  { id: 'online', label: 'Pay Online (UPI / Card / Net Banking)' },
+  { id: 'cod',    label: 'Cash on Delivery' },
 ];
 
 const DELIVERY_FEE_THRESHOLD = 599;
+
+const loadRazorpay = () =>
+  new Promise(resolve => {
+    if (window.Razorpay) return resolve(true);
+    const s = document.createElement('script');
+    s.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    s.onload = () => resolve(true);
+    s.onerror = () => resolve(false);
+    document.body.appendChild(s);
+  });
 
 export default function Cart() {
   const { items, updateQty, removeFromCart, clearCart, subtotal, deliveryFee, total } = useCart();
@@ -26,12 +36,12 @@ export default function Cart() {
     address_flat: '', address_area: '', address_city: '', address_state: '', address_pin: '',
   });
   const [pinLoading, setPinLoading] = useState(false);
-  const [pinErr, setPinErr] = useState('');
-  const [payMethod, setPayMethod] = useState('upi');
-  const [step, setStep] = useState('cart'); // cart | checkout | payment | success | failed
-  const [loading, setLoading] = useState(false);
-  const [errMsg, setErrMsg] = useState('');
-  const [orderId, setOrderId] = useState(null);
+  const [pinErr, setPinErr]         = useState('');
+  const [payMethod, setPayMethod]   = useState('online');
+  const [step, setStep]             = useState('cart'); // cart | success | failed
+  const [loading, setLoading]       = useState(false);
+  const [errMsg, setErrMsg]         = useState('');
+  const [orderId, setOrderId]       = useState(null);
 
   const handleChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
 
@@ -42,13 +52,13 @@ export default function Cart() {
     if (pin.length === 6) {
       setPinLoading(true);
       try {
-        const res = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
+        const res  = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
         const json = await res.json();
         if (json?.[0]?.Status === 'Success' && json[0].PostOffice?.length > 0) {
           const po = json[0].PostOffice[0];
           setForm(f => ({
             ...f,
-            address_city: po.District || po.Name || f.address_city,
+            address_city:  po.District || po.Name || f.address_city,
             address_state: po.State || f.address_state,
           }));
         } else {
@@ -68,19 +78,18 @@ export default function Cart() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const requiredFieldsFilled = () =>
+    form.customer_name && form.customer_phone && form.customer_email &&
+    form.address_flat && form.address_area && form.address_city && form.address_pin;
+
   const sendOrderEmails = async (orderData) => {
     const itemsList = orderData.items
       .map(i => `${i.name} x${i.qty} — ₹${i.price * i.qty}`)
       .join('\n');
-
     const address = [
-      orderData.address_flat,
-      orderData.address_area,
-      orderData.address_city,
-      orderData.address_state,
-      orderData.address_pin,
+      orderData.address_flat, orderData.address_area,
+      orderData.address_city, orderData.address_state, orderData.address_pin,
     ].filter(Boolean).join(', ');
-
     const templateParams = {
       order_id:       orderData.orderId || '',
       customer_name:  orderData.customer_name,
@@ -91,96 +100,159 @@ export default function Cart() {
       item_total:     `₹${orderData.item_total}`,
       delivery_fee:   orderData.delivery_fee === 0 ? 'FREE' : `₹${orderData.delivery_fee}`,
       grand_total:    `₹${orderData.grand_total}`,
-      payment_method: orderData.payment_method?.toUpperCase(),
+      payment_method: orderData.payment_method === 'cod'
+        ? 'Cash on Delivery'
+        : orderData.payment_method === 'online'
+          ? 'Online Payment (Razorpay)'
+          : (orderData.payment_method || '').toUpperCase(),
     };
-
     try {
-      // Email to customer
       await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
-        ...templateParams,
-        to_email: orderData.customer_email,
-        to_name:  orderData.customer_name,
+        ...templateParams, to_email: orderData.customer_email, to_name: orderData.customer_name,
       }, EMAILJS_KEY);
-
-      // Email to admin
       await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
-        ...templateParams,
-        to_email: ADMIN_EMAIL,
-        to_name:  'Crave Better Admin',
+        ...templateParams, to_email: ADMIN_EMAIL, to_name: 'Crave Better Admin',
       }, EMAILJS_KEY);
     } catch (err) {
       console.error('EmailJS error:', err);
     }
   };
 
-  const simulatePayment = async () => {
-    if (!form.customer_name || !form.customer_phone || !form.customer_email || !form.address_flat || !form.address_area || !form.address_city || !form.address_pin) {
+  const placeOrder = async (paymentMethod, extraFields = {}) => {
+    const orderPayload = {
+      ...form,
+      ...extraFields,
+      payment_method: paymentMethod,
+      items: items.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty, image: i.image })),
+      item_total:   subtotal,
+      delivery_fee: deliveryFee,
+      grand_total:  total,
+    };
+    const res  = await fetch(`${API_BASE}/orders`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(orderPayload),
+    });
+    return res.json();
+  };
+
+  const handlePayment = async () => {
+    if (!requiredFieldsFilled()) {
       setErrMsg('Please fill all required fields (marked *).');
       return;
     }
     setErrMsg('');
-    setStep('payment');
     setLoading(true);
 
-    // Simulate payment gateway delay
-    await new Promise(r => setTimeout(r, 2000));
+    // Cash on Delivery — place order directly
+    if (payMethod === 'cod') {
+      try {
+        const json = await placeOrder('cod');
+        if (json.status === 'success') {
+          const oid = json.data?.order_number;
+          setOrderId(oid);
+          await sendOrderEmails({ ...form, orderId: oid, items, item_total: subtotal, delivery_fee: deliveryFee, grand_total: total, payment_method: 'cod' });
+          clearCart();
+          setStep('success');
+        } else {
+          setStep('failed');
+        }
+      } catch {
+        setStep('failed');
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
 
-    // 90% success simulation
-    const success = Math.random() < 0.9;
-    if (!success) {
+    // Online payment via Razorpay
+    const loaded = await loadRazorpay();
+    if (!loaded) {
+      setErrMsg('Could not load payment gateway. Please check your connection and try again.');
       setLoading(false);
-      setStep('failed');
       return;
     }
 
     try {
-      const orderPayload = {
-        ...form,
-        payment_method: payMethod,
-        items: items.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty, image: i.image })),
-        item_total: subtotal,
-        delivery_fee: deliveryFee,
-        grand_total: total,
-      };
-
-      const res = await fetch(`${API_BASE}/orders`, {
+      // Step 1: create Razorpay order on backend
+      const createRes  = await fetch(`${API_BASE}/payments/create-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderPayload),
+        body: JSON.stringify({ amount: total * 100 }), // paise
       });
-      const json = await res.json();
-      if (json.status === 'success') {
-        const oid = json.data?.order_number;
-        setOrderId(oid);
-        await sendOrderEmails({
-          ...form,
-          orderId:      oid,
-          items,
-          item_total:   subtotal,
-          delivery_fee: deliveryFee,
-          grand_total:  total,
-        });
-        clearCart();
-        setStep('success');
-      } else {
-        setStep('failed');
+      const createJson = await createRes.json();
+      if (createJson.status !== 'success') {
+        setErrMsg('Could not initiate payment. Please try again.');
+        setLoading(false);
+        return;
       }
+
+      const rzpOrderId = createJson.data.id;
+
+      // Step 2: open Razorpay checkout modal
+      const options = {
+        key:         RZP_KEY_ID,
+        amount:      total * 100,
+        currency:    'INR',
+        name:        'Crave Better Foods',
+        description: 'Order Payment',
+        order_id:    rzpOrderId,
+        prefill: {
+          name:    form.customer_name,
+          email:   form.customer_email,
+          contact: form.customer_phone,
+        },
+        theme:  { color: '#54221b' },
+        handler: async (response) => {
+          // Step 3: verify payment + place order
+          try {
+            const verifyRes  = await fetch(`${API_BASE}/payments/verify`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_order_id:   response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature:  response.razorpay_signature,
+                ...form,
+                payment_method: 'online',
+                items: items.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty, image: i.image })),
+                item_total:   subtotal,
+                delivery_fee: deliveryFee,
+                grand_total:  total,
+              }),
+            });
+            const verifyJson = await verifyRes.json();
+            if (verifyJson.status === 'success') {
+              const oid = verifyJson.data?.order_number;
+              setOrderId(oid);
+              await sendOrderEmails({ ...form, orderId: oid, items, item_total: subtotal, delivery_fee: deliveryFee, grand_total: total, payment_method: 'online' });
+              clearCart();
+              setStep('success');
+            } else {
+              setStep('failed');
+            }
+          } catch {
+            setStep('failed');
+          } finally {
+            setLoading(false);
+          }
+        },
+        modal: {
+          ondismiss: () => setLoading(false),
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', () => {
+        setLoading(false);
+        setStep('failed');
+      });
+      rzp.open();
     } catch {
-      setStep('failed');
-    } finally {
+      setErrMsg('Payment failed. Please try again.');
       setLoading(false);
     }
   };
-
-  if (step === 'payment') {
-    return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center gap-5 px-4">
-        <Loader size={48} className="text-[#54221b] animate-spin" />
-        <p className="text-gray-600 font-medium">Processing your payment…</p>
-        <p className="text-xs text-gray-400">Please do not close this window.</p>
-      </div>
-    );
-  }
 
   if (step === 'success') {
     return (
@@ -189,7 +261,8 @@ export default function Cart() {
         <h2 className="text-2xl font-black text-gray-900">Order Placed!</h2>
         {orderId && <p className="text-xs text-gray-400">Order ID: #{orderId}</p>}
         <p className="text-gray-500 max-w-sm">
-          Your order has been placed successfully. A confirmation has been sent to <span className="font-semibold text-gray-700">{form.customer_email}</span>.
+          Your order has been placed successfully. A confirmation has been sent to{' '}
+          <span className="font-semibold text-gray-700">{form.customer_email}</span>.
         </p>
         <Link
           to="/products"
@@ -376,31 +449,14 @@ export default function Cart() {
                     </button>
                   ))}
                 </div>
-                {payMethod === 'upi' && (
-                  <div className="mt-3 bg-gray-50 rounded-xl p-4 text-center">
-                    <p className="text-xs text-gray-400 mb-2">Scan QR to pay</p>
-                    <div className="w-28 h-28 bg-gray-200 rounded-lg mx-auto flex items-center justify-center text-gray-400 text-xs">
-                      [QR Code]
-                    </div>
-                    <p className="text-xs text-gray-400 mt-2">UPI ID: cravebetter@upi</p>
-                  </div>
-                )}
-                {payMethod === 'card' && (
-                  <div className="mt-3 bg-gray-50 rounded-xl p-4 space-y-3">
-                    <input type="text" placeholder="Card Number" maxLength={19}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#54221b]" />
-                    <div className="flex gap-3">
-                      <input type="text" placeholder="MM / YY"
-                        className="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#54221b]" />
-                      <input type="text" placeholder="CVV" maxLength={4}
-                        className="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#54221b]" />
-                    </div>
-                    <p className="text-xs text-gray-400 text-center">This is a demo payment — no real transaction occurs.</p>
-                  </div>
+                {payMethod === 'online' && (
+                  <p className="mt-3 text-xs text-gray-500 bg-blue-50 rounded-xl px-4 py-3">
+                    You'll be taken to a secure Razorpay payment page to pay via UPI, Card, or Net Banking.
+                  </p>
                 )}
                 {payMethod === 'cod' && (
                   <p className="mt-3 text-xs text-gray-500 bg-yellow-50 rounded-xl px-4 py-3">
-                    Cash on Delivery: Pay when your order arrives. ₹5 COD convenience fee applies.
+                    Cash on Delivery: Pay when your order arrives.
                   </p>
                 )}
               </div>
@@ -414,7 +470,6 @@ export default function Cart() {
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 sticky top-20">
             <h2 className="font-bold text-gray-900 mb-4">Order Summary</h2>
 
-            {/* Items */}
             <div className="space-y-2 mb-4">
               {items.map(i => (
                 <div key={i.id} className="flex justify-between text-sm">
@@ -461,11 +516,14 @@ export default function Cart() {
               ) : (
                 <>
                   <button
-                    onClick={simulatePayment}
+                    onClick={handlePayment}
                     disabled={loading}
-                    className="w-full bg-[#54221b] text-white font-bold py-3.5 rounded-full hover:bg-[#6b2b22] transition-colors text-sm disabled:opacity-60"
+                    className="w-full bg-[#54221b] text-white font-bold py-3.5 rounded-full hover:bg-[#6b2b22] transition-colors text-sm disabled:opacity-60 flex items-center justify-center gap-2"
                   >
-                    {loading ? 'Processing…' : `Pay ₹${total}`}
+                    {loading
+                      ? <><Loader size={16} className="animate-spin" /> Processing…</>
+                      : payMethod === 'cod' ? `Place Order — ₹${total}` : `Pay ₹${total}`
+                    }
                   </button>
                   <button
                     onClick={() => { setStep('cart'); setErrMsg(''); }}
