@@ -4,10 +4,10 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  build: {
-    outDir: '../cravebetter-api/public',
-    emptyOutDir: true
+   build: {
+    outDir: 'dist',
   },
+
   server: {
     proxy: {
       '/api': {
