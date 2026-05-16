@@ -25,8 +25,8 @@ function DefaultContact() {
           </div>
           <div>
             <p className="font-bold text-gray-800 text-sm mb-1">Email Us</p>
-            <a href="mailto:listen@cravebetter4u.com" className="text-xs text-[#54221b] hover:underline break-all">
-              listen@cravebetter4u.com
+            <a href="mailto:kalyani@cravebetter4u.com" className="text-xs text-[#54221b] hover:underline break-all">
+              kalyani@cravebetter4u.com
             </a>
           </div>
         </div>
@@ -78,7 +78,7 @@ function DefaultContact() {
         <p className="font-bold text-[#2D6A4F] text-sm mb-2">Order Issues</p>
         <p className="text-sm text-gray-600 leading-relaxed">
           If you have a concern about a delivered order (damaged product, wrong item, missing items), email us at{' '}
-          <a href="mailto:listen@cravebetter4u.com" className="text-[#54221b] underline">listen@cravebetter4u.com</a>{' '}
+          <a href="mailto:kalyani@cravebetter4u.com" className="text-[#54221b] underline">kalyani@cravebetter4u.com</a>{' '}
           with your order number and photographs within 48 hours of delivery.
         </p>
       </div>

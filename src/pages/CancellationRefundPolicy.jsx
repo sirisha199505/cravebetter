@@ -17,7 +17,7 @@ const DEFAULT_CONTENT = `
 
 <h2>1. Order Cancellation</h2>
 <h3>Before Dispatch</h3>
-<p>Orders can be cancelled within <strong>12 hours of placing the order</strong>, provided the order has not yet been dispatched. To request a cancellation, contact us immediately at <a href="mailto:listen@cravebetter4u.com">listen@cravebetter4u.com</a> or call +91 8008804992.</p>
+<p>Orders can be cancelled within <strong>12 hours of placing the order</strong>, provided the order has not yet been dispatched. To request a cancellation, contact us immediately at <a href="mailto:kalyani@cravebetter4u.com">kalyani@cravebetter4u.com</a> or call +91 8008804992.</p>
 <h3>After Dispatch</h3>
 <p>Once an order has been dispatched, it cannot be cancelled. You may raise a return or refund request upon delivery as described below.</p>
 
@@ -37,7 +37,7 @@ const DEFAULT_CONTENT = `
 
 <h2>3. How to Raise a Return Request</h2>
 <ol>
-  <li>Contact us within <strong>48 hours of delivery</strong> at <a href="mailto:listen@cravebetter4u.com">listen@cravebetter4u.com</a></li>
+  <li>Contact us within <strong>48 hours of delivery</strong> at <a href="mailto:kalyani@cravebetter4u.com">kalyani@cravebetter4u.com</a></li>
   <li>Include your order number, description of the issue, and photos of the damaged/incorrect product</li>
   <li>Our team will review and respond within 2 business days</li>
   <li>If approved, we will arrange a pickup or provide return instructions</li>
@@ -59,7 +59,7 @@ const DEFAULT_CONTENT = `
 
 <h2>7. Contact Us</h2>
 <ul>
-  <li>Email: <a href="mailto:listen@cravebetter4u.com">listen@cravebetter4u.com</a></li>
+  <li>Email: <a href="mailto:kalyani@cravebetter4u.com">kalyani@cravebetter4u.com</a></li>
   <li>Phone: +91 8008804992 / +91 8008804991 / +91 8008804997</li>
 </ul>
 `;

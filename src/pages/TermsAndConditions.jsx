@@ -48,7 +48,7 @@ const DEFAULT_CONTENT = `
 <p>We reserve the right to update these Terms and Conditions at any time. Continued use of the website after changes are posted constitutes your acceptance of the revised terms.</p>
 
 <h2>10. Contact</h2>
-<p>For any questions, please contact us at <a href="mailto:listen@cravebetter4u.com">listen@cravebetter4u.com</a>.</p>
+<p>For any questions, please contact us at <a href="mailto:kalyani@cravebetter4u.com">kalyani@cravebetter4u.com</a>.</p>
 `;
 
 export default function TermsAndConditions() {

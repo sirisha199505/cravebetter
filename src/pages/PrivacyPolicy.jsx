@@ -53,14 +53,14 @@ const DEFAULT_CONTENT = `
 <p>We implement appropriate technical and organisational measures to protect your personal data against unauthorised access, loss, or disclosure. However, no method of transmission over the internet is 100% secure.</p>
 
 <h2>6. Your Rights</h2>
-<p>You have the right to access, correct, or request deletion of your personal data. To exercise these rights, contact us at <a href="mailto:listen@cravebetter4u.com">listen@cravebetter4u.com</a>.</p>
+<p>You have the right to access, correct, or request deletion of your personal data. To exercise these rights, contact us at <a href="mailto:kalyani@cravebetter4u.com">kalyani@cravebetter4u.com</a>.</p>
 
 <h2>7. Changes to This Policy</h2>
 <p>We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated revision date.</p>
 
 <h2>8. Contact Us</h2>
 <ul>
-  <li>Email: <a href="mailto:listen@cravebetter4u.com">listen@cravebetter4u.com</a></li>
+  <li>Email: <a href="mailto:kalyani@cravebetter4u.com">kalyani@cravebetter4u.com</a></li>
   <li>Phone: +91 8008804992 / +91 8008804991 / +91 8008804997</li>
 </ul>
 `;

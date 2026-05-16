@@ -50,14 +50,14 @@ const DEFAULT_CONTENT = `
 </ul>
 
 <h2>8. Damaged in Transit</h2>
-<p>If your order arrives damaged, please take photographs and contact us within <strong>48 hours of delivery</strong> at <a href="mailto:listen@cravebetter4u.com">listen@cravebetter4u.com</a>. We will arrange a replacement or refund as per our Refund Policy.</p>
+<p>If your order arrives damaged, please take photographs and contact us within <strong>48 hours of delivery</strong> at <a href="mailto:kalyani@cravebetter4u.com">kalyani@cravebetter4u.com</a>. We will arrange a replacement or refund as per our Refund Policy.</p>
 
 <h2>9. Bulk Orders</h2>
 <p>Shipping timelines and charges for bulk orders may differ based on quantity and location. Our team will provide specific delivery details when confirming your bulk order.</p>
 
 <h2>10. Contact Us</h2>
 <ul>
-  <li>Email: <a href="mailto:listen@cravebetter4u.com">listen@cravebetter4u.com</a></li>
+  <li>Email: <a href="mailto:kalyani@cravebetter4u.com">kalyani@cravebetter4u.com</a></li>
   <li>Phone: +91 8008804992 / +91 8008804991 / +91 8008804997</li>
 </ul>
 `;
