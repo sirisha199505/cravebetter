@@ -166,6 +166,12 @@ export default function Cart() {
     }
 
     // Online payment via Razorpay
+    if (!RZP_KEY_ID) {
+      setErrMsg('Payment configuration error. Please contact support.');
+      setLoading(false);
+      return;
+    }
+
     const loaded = await loadRazorpay();
     if (!loaded) {
       setErrMsg('Could not load payment gateway. Please check your connection and try again.');
