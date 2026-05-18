@@ -8,7 +8,6 @@ import { API_BASE } from '../config';
 const EMAILJS_SERVICE  = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const EMAILJS_TEMPLATE = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
 const EMAILJS_KEY      = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
-const RZP_KEY_ID       = import.meta.env.VITE_RAZORPAY_KEY_ID;
 const ADMIN_EMAIL      = 'luckysirisha1@gmail.com';
 
 const PAYMENT_METHODS = [
@@ -166,12 +165,6 @@ export default function Cart() {
     }
 
     // Online payment via Razorpay
-    if (!RZP_KEY_ID) {
-      setErrMsg('Payment configuration error. Please contact support.');
-      setLoading(false);
-      return;
-    }
-
     const loaded = await loadRazorpay();
     if (!loaded) {
       setErrMsg('Could not load payment gateway. Please check your connection and try again.');
@@ -201,10 +194,11 @@ export default function Cart() {
       }
 
       const rzpOrderId = createJson.data.id;
+      const rzpKeyId   = createJson.data.key_id;
 
       // Step 2: open Razorpay checkout modal
       const options = {
-        key:         RZP_KEY_ID,
+        key:         rzpKeyId,
         amount:      total * 100,
         currency:    'INR',
         name:        'Crave Better Foods',
