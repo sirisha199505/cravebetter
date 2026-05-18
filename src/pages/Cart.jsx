@@ -8,7 +8,7 @@ import { API_BASE } from '../config';
 const EMAILJS_SERVICE  = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const EMAILJS_TEMPLATE = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
 const EMAILJS_KEY      = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
-const ADMIN_EMAIL      = 'luckysirisha1@gmail.com';
+const ADMIN_EMAIL      = 'kalyani@cravebetter4u.com';
 
 const PAYMENT_METHODS = [
   { id: 'online', label: 'Pay Online (UPI / Card / Net Banking)' },
