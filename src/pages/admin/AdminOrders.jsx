@@ -73,7 +73,7 @@ export default function AdminOrders() {
                 <div className="flex items-center gap-3">
                   <ChevronDown size={16} className={`text-gray-400 transition-transform ${expanded === o.id ? 'rotate-180' : ''}`} />
                   <div>
-                    <p className="font-bold text-gray-900">#{o.id} — {o.customer_name}</p>
+                    <p className="font-bold text-gray-900">#{o.order_number || o.id} — {o.customer_name}</p>
                     <p className="text-xs text-gray-400">{o.customer_phone} · {new Date(o.created_at).toLocaleDateString('en-IN')}</p>
                   </div>
                 </div>

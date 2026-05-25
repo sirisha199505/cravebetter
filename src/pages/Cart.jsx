@@ -15,7 +15,7 @@ const PAYMENT_METHODS = [
   { id: 'cod',    label: 'Cash on Delivery' },
 ];
 
-const DELIVERY_FEE_THRESHOLD = 599;
+const DELIVERY_FEE_THRESHOLD = 499;
 
 const loadRazorpay = () =>
   new Promise(resolve => {
@@ -42,6 +42,9 @@ export default function Cart() {
   const [errMsg, setErrMsg]         = useState('');
   const [orderId, setOrderId]       = useState(null);
 
+  const prepaidDiscount = payMethod === 'online' ? Math.round(subtotal * 0.03) : 0;
+  const finalTotal = total - prepaidDiscount;
+
   const handleChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
 
   const handlePinChange = async e => {
@@ -51,20 +54,19 @@ export default function Cart() {
     if (pin.length === 6) {
       setPinLoading(true);
       try {
-        const res  = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
+        const res  = await fetch(`${API_BASE}/pincode/${pin}`);
         const json = await res.json();
-        if (json?.[0]?.Status === 'Success' && json[0].PostOffice?.length > 0) {
-          const po = json[0].PostOffice[0];
+        if (json.status === 'success' && json.data?.city) {
           setForm(f => ({
             ...f,
-            address_city:  po.District || po.Name || f.address_city,
-            address_state: po.State || f.address_state,
+            address_city:  json.data.city  || f.address_city,
+            address_state: json.data.state || f.address_state,
           }));
         } else {
-          setPinErr('Pincode not found. Please fill city & state manually.');
+          setPinErr('PIN not found — please enter city & state manually.');
         }
       } catch {
-        setPinErr('Could not fetch pincode details. Please fill manually.');
+        setPinErr('Could not reach lookup service — please enter city & state manually.');
       } finally {
         setPinLoading(false);
       }
@@ -120,12 +122,12 @@ export default function Cart() {
   const placeOrder = async (paymentMethod, extraFields = {}) => {
     const orderPayload = {
       ...form,
-      ...extraFields,
       payment_method: paymentMethod,
       items: items.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty, image: i.image })),
       item_total:   subtotal,
       delivery_fee: deliveryFee,
       grand_total:  total,
+      ...extraFields,
     };
     const res  = await fetch(`${API_BASE}/orders`, {
       method: 'POST',
@@ -143,10 +145,10 @@ export default function Cart() {
     setErrMsg('');
     setLoading(true);
 
-    // Cash on Delivery — place order directly
+    // Cash on Delivery — place order directly (no prepaid discount)
     if (payMethod === 'cod') {
       try {
-        const json = await placeOrder('cod');
+        const json = await placeOrder('cod', { grand_total: total });
         if (json.status === 'success') {
           const oid = json.data?.order_number;
           setOrderId(oid);
@@ -178,12 +180,12 @@ export default function Cart() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          amount:         total * 100, // paise
+          amount:         finalTotal * 100, // paise
           ...form,
           items:          items.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty, image: i.image })),
           item_total:     subtotal,
           delivery_fee:   deliveryFee,
-          grand_total:    total,
+          grand_total:    finalTotal,
         }),
       });
       const createJson = await createRes.json();
@@ -199,7 +201,7 @@ export default function Cart() {
       // Step 2: open Razorpay checkout modal
       const options = {
         key:         rzpKeyId,
-        amount:      total * 100,
+        amount:      finalTotal * 100,
         currency:    'INR',
         name:        'Crave Better Foods',
         description: 'Order Payment',
@@ -226,7 +228,7 @@ export default function Cart() {
             if (verifyJson.status === 'success') {
               const oid = verifyJson.data?.order_number;
               setOrderId(oid);
-              await sendOrderEmails({ ...form, orderId: oid, items, item_total: subtotal, delivery_fee: deliveryFee, grand_total: total, payment_method: 'online' });
+              await sendOrderEmails({ ...form, orderId: oid, items, item_total: subtotal, delivery_fee: deliveryFee, grand_total: finalTotal, payment_method: 'online' });
               clearCart();
               setStep('success');
             } else {
@@ -314,6 +316,24 @@ export default function Cart() {
 
   return (
     <main className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+      {/* Delivery & Discount Banner */}
+      <div className="flex flex-col sm:flex-row gap-2 mb-6">
+        <div className="flex-1 flex items-center gap-2.5 bg-[#edf7f2] border border-[#2D6A4F]/20 rounded-2xl px-4 py-3">
+          <span className="text-lg">🚚</span>
+          <div>
+            <p className="text-xs font-black text-[#2D6A4F]">Free Delivery Above ₹499</p>
+            <p className="text-[10px] text-gray-500">Add more to unlock free shipping</p>
+          </div>
+        </div>
+        <div className="flex-1 flex items-center gap-2.5 bg-[#fdf5ee] border border-[#7b3f00]/20 rounded-2xl px-4 py-3">
+          <span className="text-lg">💳</span>
+          <div>
+            <p className="text-xs font-black text-[#7b3f00]">Get 3% Discount on Prepaid Orders</p>
+            <p className="text-[10px] text-gray-500">Pay online via UPI, Card or Net Banking</p>
+          </div>
+        </div>
+      </div>
+
       <h1 className="text-3xl font-black text-[#54221b] mb-8">
         {step === 'cart' ? 'Your Cart' : 'Checkout'}
       </h1>
@@ -335,19 +355,19 @@ export default function Cart() {
                     <button onClick={() => removeFromCart(item.id)} className="text-gray-300 hover:text-red-500 transition-colors">
                       <Trash2 size={16} />
                     </button>
-                    <div className="flex items-center gap-1.5 bg-gray-50 rounded-full px-1.5 py-1">
+                    <div className="flex items-center bg-gray-100 rounded-full overflow-hidden border border-gray-200">
                       <button
                         onClick={() => updateQty(item.id, item.qty - 1)}
-                        className="w-6 h-6 rounded-full bg-white shadow-sm flex items-center justify-center hover:bg-gray-100"
+                        className="w-8 h-8 flex items-center justify-center hover:bg-gray-200 transition-colors text-gray-600 active:scale-90"
                       >
-                        <Minus size={11} />
+                        <Minus size={12} />
                       </button>
-                      <span className="w-5 text-center text-sm font-bold">{item.qty}</span>
+                      <span className="px-2 text-sm font-bold text-gray-900 min-w-[28px] text-center">{item.qty}</span>
                       <button
                         onClick={() => updateQty(item.id, item.qty + 1)}
-                        className="w-6 h-6 rounded-full bg-white shadow-sm flex items-center justify-center hover:bg-gray-100"
+                        className="w-8 h-8 flex items-center justify-center hover:bg-gray-200 transition-colors text-gray-600 active:scale-90"
                       >
-                        <Plus size={11} />
+                        <Plus size={12} />
                       </button>
                     </div>
                   </div>
@@ -490,10 +510,22 @@ export default function Cart() {
                   {deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`}
                 </span>
               </div>
+              {payMethod === 'online' && prepaidDiscount > 0 && (
+                <div className="flex justify-between text-sm text-green-600 font-semibold">
+                  <span>Prepaid Discount (3%)</span>
+                  <span>-₹{prepaidDiscount}</span>
+                </div>
+              )}
               <div className="flex justify-between font-black text-gray-900 pt-2 border-t border-gray-100">
-                <span>Total</span><span>₹{total}</span>
+                <span>Total</span><span>₹{finalTotal}</span>
               </div>
             </div>
+
+            {payMethod === 'online' && prepaidDiscount > 0 && (
+              <p className="text-xs text-green-600 bg-green-50 rounded-xl px-3 py-2 mt-3 font-semibold">
+                🎉 You save ₹{prepaidDiscount} with prepaid payment (3% off)!
+              </p>
+            )}
 
             {subtotal > 0 && subtotal < DELIVERY_FEE_THRESHOLD && (
               <p className="text-xs text-teal-600 bg-teal-50 rounded-xl px-3 py-2 mt-3">
@@ -523,7 +555,7 @@ export default function Cart() {
                   >
                     {loading
                       ? <><Loader size={16} className="animate-spin" /> Processing…</>
-                      : payMethod === 'cod' ? `Place Order — ₹${total}` : `Pay ₹${total}`
+                      : payMethod === 'cod' ? `Place Order — ₹${total}` : `Pay ₹${finalTotal}`
                     }
                   </button>
                   <button

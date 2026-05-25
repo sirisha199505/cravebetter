@@ -1,14 +1,16 @@
+import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { TrendingDown, Wheat, Sprout, ArrowRight, Star, Plus, Minus, Coffee, Moon, Zap, Activity } from 'lucide-react';
+import { TrendingDown, Wheat, Sprout, ArrowRight, Star, Plus, Minus, Coffee, Moon, Zap, Activity, ChevronDown, Search } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { products } from '../data/products';
+import { useProducts } from '../hooks/useProducts';
+import { useFAQs } from '../hooks/useFAQs';
 
 /* ── data ── */
 
 const benefitBadges = [
   {
     icon: <TrendingDown size={28} strokeWidth={2.5} />,
-    label: 'Zero Sugar Spike',
+    label: 'Minimal Sugar Spike',
     sub: 'All the sweetness. None of the crash.',
     color: '#54221b',
     bg: '#fdf0ed',
@@ -84,11 +86,12 @@ const testimonials = [
   {
     name: 'Rohan Desai',
     role: 'Business Owner, Pune',
-    text: "We bulk order for the whole office now. The milk choco square1 is gone within a day. Everyone assumes it's a regular chocolate — until they read the label.",
+    text: "We bulk order for the whole office now. The milk choco square is gone within a day. Everyone assumes it's a regular chocolate — until they read the label.",
     rating: 5,
     avatar: 'RD',
   },
 ];
+
 
 function StarRating({ count = 5 }) {
   return (
@@ -100,9 +103,123 @@ function StarRating({ count = 5 }) {
   );
 }
 
+function FAQItem({ q, a, highlight }) {
+  const [open, setOpen] = useState(false);
+  const contentRef = useRef(null);
+
+  const highlightText = (text, term) => {
+    if (!term) return text;
+    const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    const parts = text.split(regex);
+    return parts.map((part, i) =>
+      regex.test(part)
+        ? <mark key={i} className="bg-yellow-200 text-gray-900 rounded px-0.5">{part}</mark>
+        : part
+    );
+  };
+
+  return (
+    <div className="border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
+      <button
+        onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center justify-between px-5 py-4 text-left bg-white hover:bg-[#fdf5f0] transition-colors"
+      >
+        <span className="font-bold text-gray-900 text-sm sm:text-base pr-4 leading-snug">
+          {highlightText(q, highlight)}
+        </span>
+        <div className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 ${open ? 'bg-[#54221b] text-white rotate-180' : 'bg-gray-100 text-gray-500'}`}>
+          <ChevronDown size={15} />
+        </div>
+      </button>
+      <div
+        ref={contentRef}
+        className="overflow-hidden transition-all duration-300 ease-in-out"
+        style={{ maxHeight: open ? (contentRef.current?.scrollHeight ?? 500) + 'px' : '0px' }}
+      >
+        <div className="px-5 pb-5 pt-1 bg-white border-t border-gray-50">
+          <p className="text-sm text-gray-500 leading-relaxed">{highlightText(a, highlight)}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FAQSection() {
+  const { faqs } = useFAQs();
+  const [query, setQuery] = useState('');
+  const filtered = faqs.filter(f =>
+    f.question.toLowerCase().includes(query.toLowerCase()) ||
+    f.answer.toLowerCase().includes(query.toLowerCase())
+  );
+
+  return (
+    <section className="py-14 sm:py-20 bg-[#f8fafc]">
+      <div className="max-w-3xl mx-auto px-5 sm:px-6">
+        <div className="text-center mb-10 sm:mb-12">
+          <span className="inline-block text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#2D6A4F] mb-3">Got Questions?</span>
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-4">
+            Frequently Asked{' '}
+            <span className="text-[#54221b]">Questions</span>
+          </h2>
+          {/* Search bar */}
+          <div className="relative max-w-md mx-auto mt-6">
+            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+            <input
+              type="text"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              placeholder="Search questions…"
+              className="w-full pl-10 pr-4 py-3 rounded-full border border-gray-200 bg-white text-sm focus:outline-none focus:border-[#54221b] focus:ring-1 focus:ring-[#54221b] shadow-sm transition-all"
+            />
+            {query && (
+              <button
+                onClick={() => setQuery('')}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs font-bold"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+          {query && (
+            <p className="text-xs text-gray-400 mt-2">
+              {filtered.length === 0 ? 'No results found.' : `${filtered.length} result${filtered.length > 1 ? 's' : ''} for "${query}"`}
+            </p>
+          )}
+        </div>
+
+        <div className="space-y-3">
+          {filtered.length > 0 ? (
+            filtered.map((faq) => (
+              <FAQItem key={faq.id} q={faq.question} a={faq.answer} highlight={query} />
+            ))
+          ) : (
+            <div className="text-center py-10">
+              <p className="text-gray-400 text-sm">No FAQs match your search.</p>
+              <button onClick={() => setQuery('')} className="mt-2 text-[#54221b] text-sm font-bold hover:underline">
+                Clear search
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-10 text-center">
+          <p className="text-sm text-gray-500 mb-3">Still have questions?</p>
+          <Link
+            to="/contact-us"
+            className="inline-flex items-center gap-2 bg-[#54221b] text-white font-bold px-6 py-3 rounded-full hover:bg-[#6b2b22] transition-colors text-sm shadow-sm"
+          >
+            Contact Us <ArrowRight size={14} />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ── component ── */
 
 export default function Home() {
+  const { products } = useProducts();
   const { addToCart, updateQty, removeFromCart, items } = useCart();
 
   const getQty = (id) => items.find(i => i.id === id)?.qty || 0;
@@ -123,13 +240,6 @@ export default function Home() {
           backgroundImage: `radial-gradient(ellipse at 70% 30%, rgba(255,255,255,0.06) 0%, transparent 55%),
                             radial-gradient(ellipse at 10% 80%, rgba(45,106,79,0.22) 0%, transparent 50%)`,
         }} />
-        <img
-          src="/main image 2.png"
-          alt=""
-          aria-hidden="true"
-          className="absolute right-0 bottom-0 h-[80%] w-auto object-contain opacity-[0.08] pointer-events-none select-none z-0"
-          onError={e => { e.target.style.display = 'none'; }}
-        />
         <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full border border-white/5 z-0" />
         <div className="absolute -left-12 bottom-16 w-60 h-60 rounded-full bg-[#2D6A4F]/15 blur-3xl z-0" />
 
@@ -139,7 +249,7 @@ export default function Home() {
           <div className="text-center md:text-left">
             <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white text-[10px] sm:text-[11px] font-bold uppercase tracking-widest px-3 sm:px-4 rounded-full mb-6 sm:mb-8">
               <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-              India's Favourite Middle Ground Snack
+              India's new snack standard.
             </div>
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-[1.08] mb-4 sm:mb-5 tracking-tight">
@@ -164,7 +274,7 @@ export default function Home() {
             {/* Inline benefit pills */}
             <div className="flex flex-wrap gap-2 justify-center md:justify-start mb-8 sm:mb-10">
               {[
-                { label: 'Zero Sugar Spike', icon: <TrendingDown size={11} strokeWidth={2.5} /> },
+                { label: 'Minimal Sugar Spike', icon: <TrendingDown size={11} strokeWidth={2.5} /> },
                 { label: 'High Fiber', icon: <Activity size={11} strokeWidth={2.5} /> },
                 { label: 'Millet-Powered', icon: <Wheat size={11} strokeWidth={2.5} /> },
                 { label: '100% Natural', icon: <Sprout size={11} strokeWidth={2.5} /> },
@@ -204,7 +314,7 @@ export default function Home() {
                     <Star key={i} size={11} className="text-yellow-400 fill-yellow-400" />
                   ))}
                 </div>
-                <p className="text-red-200/80 text-xs font-medium">10,000+ happy customers</p>
+                <p className="text-red-200/80 text-xs font-medium">1000+ happy customers</p>
               </div>
             </div>
           </div>
@@ -214,10 +324,10 @@ export default function Home() {
             <div className="relative w-full max-w-[260px] sm:max-w-sm md:max-w-lg mx-auto">
               <div className="absolute inset-8 bg-red-400/20 rounded-full blur-3xl" />
               <img
-                src="/main image 2.png"
+                src="/hero-banner.png"
                 alt="Crave Better Chocolate Squares"
                 className="relative w-full object-contain drop-shadow-2xl"
-                onError={e => { e.target.src = '/bar1.png'; }}
+                onError={e => { e.target.src = '/classic-1.png'; }}
               />
             </div>
           </div>
@@ -230,6 +340,115 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── FEATURED PRODUCTS ── */}
+      <section className="py-14 sm:py-20 bg-[#faf7f5]">
+        <div className="max-w-6xl mx-auto px-5 sm:px-6">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4 mb-8 sm:mb-12">
+            <div>
+              <span className="inline-block text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#2D6A4F] mb-2 sm:mb-3">Pick Your Favourite</span>
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-gray-900">
+                4 Flavours.{' '}
+                <span className="text-[#54221b]">Zero Guilt.</span>
+              </h2>
+            </div>
+            <Link
+              to="/products"
+              className="inline-flex items-center gap-2 bg-[#54221b] text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-full hover:bg-[#6b2b22] transition-all flex-shrink-0 shadow-sm"
+            >
+              Shop All <ArrowRight size={13} />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+            {products.map((p) => (
+              <div
+                key={p.id}
+                className="group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
+              >
+                {/* Image area */}
+                <div className="relative overflow-hidden bg-[#fdf5f0] rounded-3xl mx-3 mt-3">
+                  <img
+                    src={p.image}
+                    alt={p.name}
+                    className="w-full h-56 sm:h-60 object-contain group-hover:scale-105 transition-transform duration-500 py-3 px-2"
+                  />
+                  {p.badge && (
+                    <span
+                      className="absolute top-3 left-3 text-white text-[9px] sm:text-[10px] font-black px-2.5 py-1 rounded-full shadow-md"
+                      style={{ backgroundColor: p.badgeColor || '#54221b' }}
+                    >
+                      {p.badge}
+                    </span>
+                  )}
+                  <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 px-2 flex-wrap">
+                    <span className="inline-flex items-center gap-1 bg-[#54221b]/90 text-white text-[8px] sm:text-[9px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">
+                      <TrendingDown size={8} strokeWidth={3} /> Minimal Sugar Spike
+                    </span>
+                    <span className="inline-flex items-center gap-1 bg-[#2D6A4F]/90 text-white text-[8px] sm:text-[9px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">
+                      <Activity size={8} strokeWidth={3} /> High Fiber
+                    </span>
+                    <span className="inline-flex items-center gap-1 bg-[#7b3f00]/90 text-white text-[8px] sm:text-[9px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">
+                      <Wheat size={8} strokeWidth={3} /> Millet-Powered
+                    </span>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-4 sm:p-5 flex flex-col flex-1">
+                  <p className="font-black text-gray-900 text-sm sm:text-base mb-0.5 leading-snug">{p.name}</p>
+                  {p.pack && (
+                    <p className="text-[10px] sm:text-xs font-black text-[#2D6A4F] mb-0.5">{p.pack}</p>
+                  )}
+                  <p className="text-[10px] sm:text-xs text-[#54221b] font-semibold italic mb-2">{p.tagline}</p>
+                  <p className="text-[10px] sm:text-xs text-gray-400 mb-3">{p.weight} · {p.protein} Protein · {p.calories}</p>
+                  <div className="flex items-center justify-between mt-auto">
+                    <div>
+                      <span className="text-base sm:text-lg font-black text-[#54221b]">₹{p.price}</span>
+                      {p.originalPrice && (
+                        <span className="text-xs text-gray-400 line-through ml-1.5">₹{p.originalPrice}</span>
+                      )}
+                      <span className="text-[10px] text-gray-400 ml-1">/ pack</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {getQty(p.id) === 0 ? (
+                        <button
+                          onClick={() => handleAdd(p)}
+                          className="text-[9px] font-semibold px-2 py-0.5 rounded bg-[#54221b] text-white hover:bg-[#6b2b22] transition-colors"
+                        >
+                          Add to Cart
+                        </button>
+                      ) : (
+                        <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
+                          <button
+                            onClick={() => handleDecrease(p)}
+                            className="px-2 py-1 text-gray-600 hover:bg-gray-100 transition-colors border-r border-gray-300"
+                          >
+                            <Minus size={10} />
+                          </button>
+                          <span className="px-2 text-[11px] font-bold text-gray-900">{getQty(p.id)}</span>
+                          <button
+                            onClick={() => handleIncrease(p)}
+                            className="px-2 py-1 text-gray-600 hover:bg-gray-100 transition-colors border-l border-gray-300"
+                          >
+                            <Plus size={10} />
+                          </button>
+                        </div>
+                      )}
+                      <Link
+                        to={`/products/${p.id}`}
+                        className="text-[10px] sm:text-xs font-bold px-3 py-2 rounded-full border border-gray-200 text-gray-400 hover:border-[#2D6A4F] hover:text-[#2D6A4F] transition-all"
+                      >
+                        Details
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── STATS BAR ── */}
       <section className="bg-white border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-5 py-8 sm:py-10 grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 text-center">
@@ -237,7 +456,7 @@ export default function Home() {
             { value: '5g', label: 'Protein Per Square', color: 'text-[#54221b]' },
             { value: '6g', label: 'Fiber Per Square', color: 'text-[#2D6A4F]' },
             { value: '0', label: 'Refined Sugar', color: 'text-[#54221b]' },
-            { value: '10k+', label: 'Happy Customers', color: 'text-[#2D6A4F]' },
+            { value: '1k+', label: 'Happy Customers', color: 'text-[#2D6A4F]' },
           ].map(s => (
             <div key={s.label}>
               <div className={`text-3xl sm:text-4xl font-black ${s.color} mb-1`}>{s.value}</div>
@@ -317,7 +536,7 @@ export default function Home() {
               <span className="text-[#54221b]">No sugar guilt.</span>
             </h2>
             <p className="text-gray-500 text-sm sm:text-base max-w-lg mx-auto leading-relaxed">
-              By using Ragi, Oats, and FOS, we've built a high-fiber snack that keeps your energy stable while tasting like an actual treat. Here's how.
+              By using Ragi, oats, jaggery and FOS, we've built a high-fiber snack that keeps your energy stable while tasting like an actual treat. Here's how.
             </p>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -334,109 +553,6 @@ export default function Home() {
                 </div>
                 <h3 className="font-black text-gray-900 text-sm sm:text-base leading-snug mb-1.5">{b.label}</h3>
                 <p className="text-xs sm:text-sm text-gray-500 leading-relaxed">{b.sub}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── FEATURED PRODUCTS ── */}
-      <section className="py-14 sm:py-20 bg-[#faf7f5]">
-        <div className="max-w-6xl mx-auto px-5 sm:px-6">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4 mb-8 sm:mb-12">
-            <div>
-              <span className="inline-block text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#2D6A4F] mb-2 sm:mb-3">Pick Your Favourite</span>
-              <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-gray-900">
-                3 Flavours.{' '}
-                <span className="text-[#54221b]">Zero Guilt.</span>
-              </h2>
-            </div>
-            <Link
-              to="/products"
-              className="inline-flex items-center gap-2 bg-[#54221b] text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-full hover:bg-[#6b2b22] transition-all flex-shrink-0 shadow-sm"
-            >
-              Shop All <ArrowRight size={13} />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6">
-            {products.map((p) => (
-              <div
-                key={p.id}
-                className="group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
-              >
-                {/* Image area */}
-                <div className="relative overflow-hidden bg-[#fdf5f0] rounded-3xl mx-3 mt-3">
-                  <img
-                    src={p.image}
-                    alt={p.name}
-                    className="w-full h-56 sm:h-60 object-contain group-hover:scale-105 transition-transform duration-500 py-3 px-2"
-                  />
-                  {p.badge && (
-                    <span
-                      className="absolute top-3 left-3 text-white text-[9px] sm:text-[10px] font-black px-2.5 py-1 rounded-full shadow-md"
-                      style={{ backgroundColor: p.badgeColor || '#54221b' }}
-                    >
-                      {p.badge}
-                    </span>
-                  )}
-                  <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 px-2 flex-wrap">
-                    <span className="inline-flex items-center gap-1 bg-[#54221b]/90 text-white text-[8px] sm:text-[9px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">
-                      <TrendingDown size={8} strokeWidth={3} /> Zero Sugar Spike
-                    </span>
-                    <span className="inline-flex items-center gap-1 bg-[#2D6A4F]/90 text-white text-[8px] sm:text-[9px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">
-                      <Activity size={8} strokeWidth={3} /> High Fiber
-                    </span>
-                    <span className="inline-flex items-center gap-1 bg-[#7b3f00]/90 text-white text-[8px] sm:text-[9px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">
-                      <Wheat size={8} strokeWidth={3} /> Millet-Powered
-                    </span>
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="p-4 sm:p-5 flex flex-col flex-1">
-                  <p className="font-black text-gray-900 text-sm sm:text-base mb-0.5 leading-snug">{p.name}</p>
-                  <p className="text-[10px] sm:text-xs text-[#54221b] font-semibold italic mb-2">{p.tagline}</p>
-                  <p className="text-[10px] sm:text-xs text-gray-400 mb-3">{p.weight} · {p.protein} Protein · {p.calories}</p>
-                  <div className="flex items-center justify-between mt-auto">
-                    <div>
-                      <span className="text-base sm:text-lg font-black text-[#54221b]">₹{p.price}</span>
-                      <span className="text-[10px] text-gray-400 ml-1">/ square</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 sm:gap-2">
-                      {getQty(p.id) === 0 ? (
-                        <button
-                          onClick={() => handleAdd(p)}
-                          className="text-xs font-bold px-5 py-2 rounded-full bg-[#54221b] text-white hover:bg-[#6b2b22] transition-all shadow-sm"
-                        >
-                          Add to Cart
-                        </button>
-                      ) : (
-                        <div className="flex items-center gap-1 bg-[#54221b] rounded-full px-1.5 py-1">
-                          <button
-                            onClick={() => handleDecrease(p)}
-                            className="w-6 h-6 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
-                          >
-                            <Minus size={11} className="text-white" />
-                          </button>
-                          <span className="w-5 text-center text-xs font-black text-white">{getQty(p.id)}</span>
-                          <button
-                            onClick={() => handleIncrease(p)}
-                            className="w-6 h-6 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
-                          >
-                            <Plus size={11} className="text-white" />
-                          </button>
-                        </div>
-                      )}
-                      <Link
-                        to={`/products/${p.id}`}
-                        className="text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-full border border-gray-200 text-gray-400 hover:border-[#2D6A4F] hover:text-[#2D6A4F] transition-all"
-                      >
-                        Details
-                      </Link>
-                    </div>
-                  </div>
-                </div>
               </div>
             ))}
           </div>
@@ -598,48 +714,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── BULK CTA ── */}
-      <section className="py-14 sm:py-20 bg-[#f8fafc]">
-        <div className="max-w-6xl mx-auto px-5 sm:px-6">
-          <div className="bg-gradient-to-br from-[#1e5054] to-[#0f2e30] rounded-3xl overflow-hidden relative">
-            <div className="absolute inset-0" style={{
-              backgroundImage: 'radial-gradient(ellipse at 85% 40%, rgba(255,255,255,0.06) 0%, transparent 50%)',
-            }} />
-            <div className="absolute -top-16 -right-16 w-56 h-56 rounded-full border border-white/5" />
-            <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-center p-8 sm:p-12 md:p-16">
-              <div>
-                <span className="inline-block text-[10px] sm:text-xs font-bold uppercase tracking-widest text-teal-300 mb-4">For Businesses</span>
-                <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-white mb-4 sm:mb-5 leading-tight">
-                  Order in Bulk.<br />
-                  <span className="text-teal-200">Save More.</span>
-                </h2>
-                <p className="text-teal-100/80 text-sm sm:text-base leading-relaxed mb-6 sm:mb-8 max-w-sm">
-                  Perfect for offices, schools, events & gifting. Special pricing, custom packaging, and dedicated support.
-                </p>
-                <Link
-                  to="/bulk-orders"
-                  className="inline-flex items-center gap-2 bg-white text-[#1e5054] font-black px-6 sm:px-8 py-3.5 sm:py-4 rounded-full hover:bg-teal-50 transition-colors shadow-lg text-sm"
-                >
-                  Request Bulk Quote <ArrowRight size={15} />
-                </Link>
-              </div>
-              <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                {[
-                  { value: '50+', label: 'Minimum Order' },
-                  { value: '30%', label: 'Bulk Savings' },
-                  { value: '24h', label: 'Response Time' },
-                  { value: '∞', label: 'Custom Packs' },
-                ].map(s => (
-                  <div key={s.label} className="bg-white/10 border border-white/10 rounded-2xl p-4 sm:p-6 text-center">
-                    <div className="text-2xl sm:text-3xl font-black text-white mb-1">{s.value}</div>
-                    <div className="text-[10px] sm:text-xs text-teal-300 font-medium">{s.label}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* ── FAQ ── */}
+      <FAQSection />
 
     </main>
   );

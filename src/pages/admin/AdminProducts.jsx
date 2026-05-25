@@ -10,18 +10,19 @@ function authHeader() {
 }
 
 const EMPTY_FORM = {
-  name: '', category: 'Protein Bar', description: '', price: '',
+  name: '', pack: 'Pack of 6', tagline: '', category: 'Chocolate Square',
+  description: '', price: '', original_price: '',
   image_url: '', badge: '', badge_color: '',
   rating: '', orders_count: '',
-  protein: '', calories: '', carbs: '', fat: '', weight: '',
+  protein: '', fiber: '', calories: '', transfat: '', carbs: '', fat: '', weight: '',
   ingredients: '',
-  benefits: '', // newline-separated in form, sent as array
+  benefits: '',
 };
 
 export default function AdminProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [modal, setModal] = useState(null); // null | 'create' | 'edit'
+  const [modal, setModal] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [editId, setEditId] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -45,22 +46,27 @@ export default function AdminProducts() {
 
   const openEdit = p => {
     setForm({
-      name: p.name,
-      category: p.category || 'Protein Bar',
-      description: p.description || '',
-      price: p.price,
-      image_url: p.image || '',
-      badge: p.badge || '',
-      badge_color: p.badgeColor || '',
-      rating: p.rating || '',
-      orders_count: p.orders || '',
-      protein: p.protein || '',
-      calories: p.calories || '',
-      carbs: p.carbs || '',
-      fat: p.fat || '',
-      weight: p.weight || '',
-      ingredients: p.ingredients || '',
-      benefits: (p.benefits || []).join('\n'),
+      name:           p.name || '',
+      pack:           p.pack || 'Pack of 6',
+      tagline:        p.tagline || '',
+      category:       p.category || 'Chocolate Square',
+      description:    p.description || '',
+      price:          p.price || '',
+      original_price: p.originalPrice || '',
+      image_url:      p.image || '',
+      badge:          p.badge || '',
+      badge_color:    p.badgeColor || '',
+      rating:         p.rating || '',
+      orders_count:   p.orders || '',
+      protein:        p.protein || '',
+      fiber:          p.fiber || '',
+      calories:       p.calories || '',
+      transfat:       p.transfat || '',
+      carbs:          p.carbs || '',
+      fat:            p.fat || '',
+      weight:         p.weight || '',
+      ingredients:    p.ingredients || '',
+      benefits:       (p.benefits || []).join('\n'),
     });
     setEditId(p.id); setErrMsg(''); setModal('edit');
   };
@@ -72,17 +78,18 @@ export default function AdminProducts() {
     const payload = {
       data: {
         ...form,
-        price: Number(form.price),
-        rating: form.rating ? Number(form.rating) : 0,
-        orders_count: form.orders_count ? Number(form.orders_count) : 0,
-        benefits: form.benefits.split('\n').map(s => s.trim()).filter(Boolean),
+        price:          Number(form.price),
+        original_price: form.original_price ? Number(form.original_price) : 0,
+        rating:         form.rating ? Number(form.rating) : 0,
+        orders_count:   form.orders_count ? Number(form.orders_count) : 0,
+        benefits:       form.benefits.split('\n').map(s => s.trim()).filter(Boolean),
       },
     };
     try {
-      const url = modal === 'edit' ? `${API_BASE}/admin/products/${editId}` : `${API_BASE}/admin/products`;
+      const url    = modal === 'edit' ? `${API_BASE}/admin/products/${editId}` : `${API_BASE}/admin/products`;
       const method = modal === 'edit' ? 'PUT' : 'POST';
-      const res = await fetch(url, { method, headers: authHeader(), body: JSON.stringify(payload) });
-      const json = await res.json();
+      const res    = await fetch(url, { method, headers: authHeader(), body: JSON.stringify(payload) });
+      const json   = await res.json();
       if (json.status === 'success') { setModal(null); load(); }
       else setErrMsg(JSON.stringify(json.data));
     } catch { setErrMsg('Network error.'); } finally { setSaving(false); }
@@ -94,6 +101,8 @@ export default function AdminProducts() {
     load();
   };
 
+  const inputCls = 'w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#54221b]';
+
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
@@ -104,18 +113,19 @@ export default function AdminProducts() {
       </div>
 
       {loading ? <p className="text-gray-400 text-sm">Loading…</p> : (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-x-auto">
+          <table className="w-full text-sm min-w-[900px]">
             <thead className="bg-gray-50">
               <tr className="text-left text-xs text-gray-400">
                 <th className="px-4 py-3">Image</th>
                 <th className="px-4 py-3">Name</th>
-                <th className="px-4 py-3">Weight</th>
-                <th className="px-4 py-3">Protein</th>
-                <th className="px-4 py-3">Calories</th>
+                <th className="px-4 py-3">Pack</th>
                 <th className="px-4 py-3">Price</th>
+                <th className="px-4 py-3">MRP</th>
+                <th className="px-4 py-3">Protein</th>
+                <th className="px-4 py-3">Fiber</th>
+                <th className="px-4 py-3">Calories</th>
                 <th className="px-4 py-3">Badge</th>
-                <th className="px-4 py-3">Rating</th>
                 <th className="px-4 py-3">Actions</th>
               </tr>
             </thead>
@@ -128,11 +138,21 @@ export default function AdminProducts() {
                       : <div className="w-14 h-14 bg-gray-100 rounded-xl" />
                     }
                   </td>
-                  <td className="px-4 py-3 font-medium text-gray-900">{p.name}</td>
-                  <td className="px-4 py-3 text-gray-500">{p.weight || '—'}</td>
+                  <td className="px-4 py-3">
+                    <p className="font-medium text-gray-900">{p.name}</p>
+                    {p.tagline && <p className="text-[10px] text-gray-400 italic mt-0.5">{p.tagline}</p>}
+                  </td>
+                  <td className="px-4 py-3 text-gray-500 text-xs">{p.pack || '—'}</td>
+                  <td className="px-4 py-3">
+                    <span className="font-bold text-[#54221b]">₹{p.price}</span>
+                    {p.originalPrice > 0 && (
+                      <span className="text-xs text-gray-400 line-through ml-1">₹{p.originalPrice}</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-gray-400 text-xs">{p.originalPrice > 0 ? `₹${p.originalPrice}` : '—'}</td>
                   <td className="px-4 py-3 font-semibold text-[#54221b]">{p.protein || '—'}</td>
+                  <td className="px-4 py-3 text-gray-500">{p.fiber || '—'}</td>
                   <td className="px-4 py-3 text-gray-500">{p.calories || '—'}</td>
-                  <td className="px-4 py-3 font-bold text-[#54221b]">₹{p.price}</td>
                   <td className="px-4 py-3">
                     {p.badge && (
                       <span className="text-xs font-bold px-2 py-0.5 rounded-full text-white" style={{ backgroundColor: p.badgeColor || '#54221b' }}>
@@ -140,7 +160,6 @@ export default function AdminProducts() {
                       </span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-gray-500">{p.rating ?? '—'}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
                       <button onClick={() => openEdit(p)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-[#54221b] transition-colors"><Edit2 size={15} /></button>
@@ -154,7 +173,7 @@ export default function AdminProducts() {
         </div>
       )}
 
-      {/* Modal */}
+      {/* ── MODAL ── */}
       {modal && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 shadow-xl">
@@ -164,46 +183,67 @@ export default function AdminProducts() {
             </div>
 
             <div className="space-y-4">
-              {/* Basic Info */}
+
+              {/* ── Basic Info ── */}
               <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Basic Info</p>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 mb-1">Name *</label>
                   <input type="text" name="name" value={form.name} onChange={handleChange}
-                    placeholder="Classic Square"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#54221b]" />
+                    placeholder="Classic Square" className={inputCls} />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1">Price (₹) *</label>
-                  <input type="number" name="price" value={form.price} onChange={handleChange}
-                    placeholder="150"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#54221b]" />
+                  <label className="block text-xs font-semibold text-gray-600 mb-1">Pack Size</label>
+                  <input type="text" name="pack" value={form.pack} onChange={handleChange}
+                    placeholder="Pack of 6" className={inputCls} />
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">Tagline</label>
+                <input type="text" name="tagline" value={form.tagline} onChange={handleChange}
+                  placeholder="Crunchy. Clean. Completely Satisfying." className={inputCls} />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-gray-600 mb-1">Description</label>
                 <textarea name="description" value={form.description} onChange={handleChange}
                   placeholder="Product description…" rows={2}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#54221b] resize-none" />
+                  className={`${inputCls} resize-none`} />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-gray-600 mb-1">Image URL</label>
                 <input type="text" name="image_url" value={form.image_url} onChange={handleChange}
-                  placeholder="/classic%20square.png"
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#54221b]" />
+                  placeholder="/classic-1.png" className={inputCls} />
                 {form.image_url && (
                   <img src={form.image_url} alt="preview" className="mt-2 h-24 object-contain bg-[#faf7f5] rounded-xl px-2" />
                 )}
               </div>
 
+              {/* ── Pricing ── */}
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest pt-2">Pricing</p>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1">Badge</label>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1">Sale Price (₹) *</label>
+                  <input type="number" name="price" value={form.price} onChange={handleChange}
+                    placeholder="190" className={inputCls} />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1">MRP / Original Price (₹)</label>
+                  <input type="number" name="original_price" value={form.original_price} onChange={handleChange}
+                    placeholder="210" className={inputCls} />
+                  <p className="text-[10px] text-gray-400 mt-1">Shown with strikethrough as the old price</p>
+                </div>
+              </div>
+
+              {/* ── Badge ── */}
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest pt-2">Badge</p>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1">Badge Text</label>
                   <input type="text" name="badge" value={form.badge} onChange={handleChange}
-                    placeholder="Best Seller"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#54221b]" />
+                    placeholder="Best Seller" className={inputCls} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 mb-1">Badge Color</label>
@@ -212,60 +252,62 @@ export default function AdminProducts() {
                       onChange={handleChange}
                       className="w-10 h-10 rounded-lg border border-gray-200 cursor-pointer p-1" />
                     <input type="text" name="badge_color" value={form.badge_color} onChange={handleChange}
-                      placeholder="#54221b"
-                      className="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#54221b]" />
+                      placeholder="#54221b" className={`flex-1 ${inputCls}`} />
                   </div>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1">Rating (0–5)</label>
-                  <input type="number" name="rating" value={form.rating} onChange={handleChange}
-                    placeholder="4.8" step="0.1" min="0" max="5"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#54221b]" />
+                  <label className="block text-xs font-semibold text-gray-600 mb-1">Category</label>
+                  <select name="category" value={form.category} onChange={handleChange} className={inputCls}>
+                    <option value="Chocolate Square">Chocolate Square</option>
+                    <option value="Combo">Combo</option>
+                  </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1">Orders Count</label>
-                  <input type="number" name="orders_count" value={form.orders_count} onChange={handleChange}
-                    placeholder="1200"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#54221b]" />
+                  <label className="block text-xs font-semibold text-gray-600 mb-1">Rating (0–5)</label>
+                  <input type="number" name="rating" value={form.rating} onChange={handleChange}
+                    placeholder="4.8" step="0.1" min="0" max="5" className={inputCls} />
                 </div>
               </div>
 
-              {/* Nutrition */}
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest pt-2">Nutritional Info</p>
-              <div className="grid grid-cols-3 gap-3">
+              {/* ── Nutritional Info ── */}
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest pt-2">Nutritional Info (per square)</p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {[
-                  { name: 'weight',   label: 'Weight',   placeholder: '28g' },
-                  { name: 'protein',  label: 'Protein',  placeholder: '5g' },
-                  { name: 'calories', label: 'Calories', placeholder: '120 kcal' },
-                  { name: 'carbs',    label: 'Carbs',    placeholder: '13g' },
-                  { name: 'fat',      label: 'Fat',      placeholder: '3.2g' },
+                  { name: 'protein',  label: 'Protein',   placeholder: '5g' },
+                  { name: 'fiber',    label: 'Fiber',     placeholder: '5.2g' },
+                  { name: 'calories', label: 'Calories',  placeholder: '120 kcal' },
+                  { name: 'transfat', label: 'Transfat',  placeholder: '0g' },
+                  { name: 'carbs',    label: 'Carbs',     placeholder: '13g' },
+                  { name: 'fat',      label: 'Fat',       placeholder: '3.2g' },
+                  { name: 'weight',   label: 'Weight',    placeholder: '28g × 6' },
                 ].map(f => (
                   <div key={f.name}>
                     <label className="block text-xs font-semibold text-gray-600 mb-1">{f.label}</label>
                     <input type="text" name={f.name} value={form[f.name]} onChange={handleChange}
-                      placeholder={f.placeholder}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#54221b]" />
+                      placeholder={f.placeholder} className={inputCls} />
                   </div>
                 ))}
               </div>
 
-              {/* Ingredients */}
+              {/* ── Ingredients ── */}
               <div>
                 <label className="block text-xs font-semibold text-gray-600 mb-1">Ingredients</label>
                 <textarea name="ingredients" value={form.ingredients} onChange={handleChange}
                   placeholder="Roasted Peanut (36%), Multigrain Muesli Mix (29%)…" rows={3}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#54221b] resize-none" />
+                  className={`${inputCls} resize-none`} />
               </div>
 
-              {/* Benefits */}
+              {/* ── Benefits ── */}
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1">Benefits <span className="text-gray-400 font-normal">(one per line)</span></label>
+                <label className="block text-xs font-semibold text-gray-600 mb-1">
+                  Benefits <span className="text-gray-400 font-normal">(one per line)</span>
+                </label>
                 <textarea name="benefits" value={form.benefits} onChange={handleChange}
-                  placeholder={"100% Natural ingredients\nSweetened with Jaggery\nNo artificial preservatives"} rows={4}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#54221b] resize-none" />
+                  placeholder={"Minimal sugar spike\nSweetened with Jaggery\nNo artificial preservatives"} rows={4}
+                  className={`${inputCls} resize-none`} />
               </div>
 
               {errMsg && <p className="text-xs text-red-600 bg-red-50 rounded-xl px-4 py-2.5">{errMsg}</p>}

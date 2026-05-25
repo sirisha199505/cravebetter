@@ -2,17 +2,18 @@ import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ChevronLeft, Plus, Minus, ShoppingCart, Check, TrendingDown, Activity, Wheat, Sprout, ArrowRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { products } from '../data/products';
+import { useProducts } from '../hooks/useProducts';
 
-/* Per-product taste chips */
-const tasteChips = {
-  1: ['Crunchy', 'Nutty', 'Satisfying'],
-  2: ['Crunchy', 'Rich', 'Indulgent'],
-  3: ['Creamy', 'Smooth', 'Satisfying'],
+/* Per-product taste chips keyed by product name */
+const tasteChipsByName = {
+  'Classic Square':    ['Crunchy', 'Nutty', 'Satisfying'],
+  'Dark Choco Square': ['Crunchy', 'Rich', 'Indulgent'],
+  'Milk Choco Square': ['Creamy', 'Smooth', 'Satisfying'],
+  'Combo Box':         ['Classic', 'Dark', 'Milk Choco'],
 };
 
 const benefitIcons = [
-  { icon: <TrendingDown size={20} strokeWidth={2.5} />, label: 'Zero Sugar Spike', color: '#54221b', bg: '#fdf0ed' },
+  { icon: <TrendingDown size={20} strokeWidth={2.5} />, label: 'Minimal Sugar Spike', color: '#54221b', bg: '#fdf0ed' },
   { icon: <Activity size={20} strokeWidth={2.5} />, label: 'High Fiber', color: '#2D6A4F', bg: '#edf7f2' },
   { icon: <Wheat size={20} strokeWidth={2.5} />, label: 'Millet-Powered', color: '#7b3f00', bg: '#fdf5ee' },
   { icon: <Sprout size={20} strokeWidth={2.5} />, label: '100% Natural', color: '#1e5054', bg: '#edf5f5' },
@@ -22,12 +23,13 @@ export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { products } = useProducts();
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
 
   const product = products.find(p => p.id === Number(id));
   const related = products.filter(p => p.id !== Number(id));
-  const chips = tasteChips[product?.id] || ['Crunchy', 'Rich', 'Satisfying'];
+  const chips = tasteChipsByName[product?.name] || ['Crunchy', 'Rich', 'Satisfying'];
 
   const handleAdd = () => {
     addToCart(product, qty);
@@ -106,18 +108,24 @@ export default function ProductDetail() {
               </div>
 
               {/* Price + weight */}
-              <div className="flex items-baseline gap-3 mb-6">
+              <div className="flex items-baseline gap-3 mb-2">
                 <span className="text-4xl font-black text-[#54221b]">₹{product.price}</span>
-                <span className="text-sm text-gray-400 font-medium">{product.weight} · Chocolate Square</span>
+                {product.originalPrice && (
+                  <span className="text-xl text-gray-400 line-through">₹{product.originalPrice}</span>
+                )}
+                <span className="text-sm text-gray-400 font-medium">{product.weight}</span>
               </div>
+              {product.pack && (
+                <p className="text-sm font-black text-[#2D6A4F] mb-6">{product.pack}</p>
+              )}
 
               {/* Macros strip */}
               <div className="grid grid-cols-4 gap-2 mb-6">
                 {[
                   { label: 'Protein', value: product.protein },
+                  { label: 'Fiber', value: product.fiber },
                   { label: 'Calories', value: product.calories },
-                  { label: 'Carbs', value: product.carbs },
-                  { label: 'Fat', value: product.fat },
+                  { label: 'Transfat', value: product.transfat },
                 ].map(m => (
                   <div key={m.label} className="bg-white rounded-2xl p-3 sm:p-4 text-center shadow-sm border border-gray-100">
                     <div className="text-base sm:text-lg font-black text-[#54221b]">{m.value}</div>
@@ -147,25 +155,29 @@ export default function ProductDetail() {
 
               {/* Add to cart */}
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1.5 bg-gray-100 rounded-full px-2 py-1.5">
+                {/* Qty stepper */}
+                <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
                   <button
                     onClick={() => setQty(q => Math.max(1, q - 1))}
-                    className="w-9 h-9 rounded-full bg-white shadow-sm flex items-center justify-center hover:bg-gray-50 transition-colors font-bold text-gray-600"
+                    className="px-3 py-3 text-gray-600 hover:bg-gray-100 transition-colors border-r border-gray-300"
                   >
                     <Minus size={14} />
                   </button>
-                  <span className="w-7 text-center font-black text-base">{qty}</span>
+                  <span className="px-4 font-bold text-base text-gray-900 min-w-[40px] text-center">{qty}</span>
                   <button
                     onClick={() => setQty(q => q + 1)}
-                    className="w-9 h-9 rounded-full bg-white shadow-sm flex items-center justify-center hover:bg-gray-50 transition-colors font-bold text-gray-600"
+                    className="px-3 py-3 text-gray-600 hover:bg-gray-100 transition-colors border-l border-gray-300"
                   >
                     <Plus size={14} />
                   </button>
                 </div>
+                {/* Add to Cart */}
                 <button
                   onClick={handleAdd}
-                  className={`flex-1 flex items-center justify-center gap-2 py-3.5 rounded-full font-black text-sm transition-all shadow-sm ${
-                    added ? 'bg-green-500 text-white' : 'bg-[#54221b] text-white hover:bg-[#6b2b22] hover:shadow-md'
+                  className={`flex-1 flex items-center justify-center gap-2 py-2 rounded text-xs font-semibold transition-all active:scale-[0.98] ${
+                    added
+                      ? 'bg-green-500 text-white'
+                      : 'bg-[#54221b] text-white hover:bg-[#6b2b22]'
                   }`}
                 >
                   <ShoppingCart size={17} />
@@ -176,6 +188,28 @@ export default function ProductDetail() {
           </div>
         </div>
       </section>
+
+      {/* ── DELIVERY & DISCOUNT STRIP ── */}
+      <div className="bg-white border-t border-gray-100">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4">
+          <div className="flex flex-col sm:flex-row gap-2">
+            <div className="flex-1 flex items-center gap-2.5 bg-[#edf7f2] border border-[#2D6A4F]/20 rounded-2xl px-4 py-3">
+              <span className="text-lg">🚚</span>
+              <div>
+                <p className="text-xs font-black text-[#2D6A4F]">Free Delivery Above ₹499</p>
+                <p className="text-[10px] text-gray-500">Across all orders, no minimum quantity</p>
+              </div>
+            </div>
+            <div className="flex-1 flex items-center gap-2.5 bg-[#fdf5ee] border border-[#7b3f00]/20 rounded-2xl px-4 py-3">
+              <span className="text-lg">💳</span>
+              <div>
+                <p className="text-xs font-black text-[#7b3f00]">Get 3% Discount on Prepaid Orders</p>
+                <p className="text-[10px] text-gray-500">Pay online at checkout & save instantly</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* ── WHAT'S INSIDE ── */}
       <section className="py-12 sm:py-16 bg-white">

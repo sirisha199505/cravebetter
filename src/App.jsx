@@ -4,7 +4,6 @@ import { CartProvider } from './context/CartContext';
 import { UserAuthProvider } from './context/UserAuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import WelcomePopup from './components/WelcomePopup';
 import AuthPopup from './components/AuthPopup';
 import Home from './pages/Home';
 import Products from './pages/Products';
@@ -17,24 +16,28 @@ import TermsAndConditions from './pages/TermsAndConditions';
 import CancellationRefundPolicy from './pages/CancellationRefundPolicy';
 import ShippingPolicy from './pages/ShippingPolicy';
 import ContactUs from './pages/ContactUs';
+import FAQs from './pages/FAQs';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminOrders from './pages/admin/AdminOrders';
-import AdminBulkOrders from './pages/admin/AdminBulkOrders';
 import AdminPageContents from './pages/admin/AdminPageContents';
+import AdminFAQs from './pages/admin/AdminFAQs';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
-  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [pathname]);
   return null;
 }
 
 function PublicLayout({ children }) {
   return (
     <div className="flex flex-col min-h-screen">
-      <WelcomePopup />
       <AuthPopup />
       <Navbar />
       <div className="flex-1">{children}</div>
@@ -62,6 +65,7 @@ export default function App() {
             <Route path="/cancellation-refund-policy" element={<PublicLayout><CancellationRefundPolicy /></PublicLayout>} />
             <Route path="/shipping-policy" element={<PublicLayout><ShippingPolicy /></PublicLayout>} />
             <Route path="/contact-us" element={<PublicLayout><ContactUs /></PublicLayout>} />
+            <Route path="/faqs" element={<PublicLayout><FAQs /></PublicLayout>} />
 
             {/* Admin routes */}
             <Route path="/admin" element={<AdminLogin />} />
@@ -69,8 +73,8 @@ export default function App() {
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="products" element={<AdminProducts />} />
               <Route path="orders" element={<AdminOrders />} />
-              <Route path="bulk-orders" element={<AdminBulkOrders />} />
               <Route path="page-contents" element={<AdminPageContents />} />
+              <Route path="faqs" element={<AdminFAQs />} />
             </Route>
           </Routes>
         </BrowserRouter>

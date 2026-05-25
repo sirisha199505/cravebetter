@@ -15,23 +15,28 @@ export default function AdminDashboard() {
   useEffect(() => {
     const load = async () => {
       try {
-        const [prodRes, ordersRes] = await Promise.all([
+        const [prodRes, ordersRes, bulkRes, allOrdersRes] = await Promise.all([
           fetch(`${API_BASE}/products`, { headers: authHeader() }),
           fetch(`${API_BASE}/admin/orders?page_size=5`, { headers: authHeader() }),
+          fetch(`${API_BASE}/admin/bulk-orders`, { headers: authHeader() }),
+          fetch(`${API_BASE}/admin/orders?page_size=500`, { headers: authHeader() }),
         ]);
         const products = await prodRes.json();
         const orders = await ordersRes.json();
+        const bulk = await bulkRes.json();
+        const allOrders = await allOrdersRes.json();
 
-        const orderList = orders.data || [];
-        const revenue = orderList.reduce((s, o) => s + (o.grand_total || 0), 0);
+        const recentList = orders.data || [];
+        const allList = allOrders.data || [];
+        const revenue = allList.reduce((s, o) => s + (Number(o.grand_total) || 0), 0);
 
         setStats({
           products: products.data?.length || 0,
-          orders: orders.total_count || orderList.length,
+          orders: orders.total_count || recentList.length,
           revenue,
-          bulkOrders: 0,
+          bulkOrders: (bulk.data || []).length,
         });
-        setRecentOrders(orderList.slice(0, 5));
+        setRecentOrders(recentList.slice(0, 5));
       } catch (e) {
         console.error(e);
       } finally {

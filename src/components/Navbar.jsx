@@ -12,7 +12,7 @@ export default function Navbar() {
     { to: '/', label: 'Home' },
     { to: '/products', label: 'Products' },
     { to: '/our-story', label: 'Our Story' },
-    { to: '/bulk-orders', label: 'Bulk Orders' },
+    { to: '/faqs', label: "FAQ's" },
   ];
 
   const isActive = (to) => pathname === to;
@@ -21,7 +21,7 @@ export default function Navbar() {
     <div className="sticky top-0 z-50">
       {/* Announcement bar */}
       <div className="bg-[#54221b] text-white text-center text-[10px] sm:text-xs font-semibold py-1.5 sm:py-2 tracking-wide px-4">
-        🚚 Free delivery above ₹599 &nbsp;·&nbsp; Crunchy. Rich. Actually Good For You. &nbsp;·&nbsp; No artificial anything.
+        🚚 Free Delivery Above ₹499 &nbsp;·&nbsp; 💳 Get 3% Discount on Prepaid Orders
       </div>
 
       <nav className="bg-white shadow-sm border-b border-gray-100">
