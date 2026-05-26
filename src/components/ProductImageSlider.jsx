@@ -15,7 +15,7 @@ export default function ProductImageSlider({ images = [], alt = '', imgClassName
     timer.current = setInterval(() => {
       setAnimated(true);
       setIdx(i => i + 1);
-    }, 2000);
+    }, 2500);
     return () => clearInterval(timer.current);
   }, [isHovered, count]);
 
