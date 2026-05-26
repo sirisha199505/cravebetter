@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate, useLocation, Outlet } from 'react-router-dom';
 import {
-  LayoutDashboard, Package, ShoppingBag,
+  LayoutDashboard, Package, ShoppingBag, Users,
   LogOut, ChevronDown, User, KeyRound, ExternalLink,
   Eye, EyeOff, X, FileText, HelpCircle,
 } from 'lucide-react';
@@ -10,6 +10,7 @@ const navItems = [
   { to: '/admin/dashboard',     icon: <LayoutDashboard size={17} />, label: 'Dashboard' },
   { to: '/admin/products',      icon: <Package size={17} />,         label: 'Products' },
   { to: '/admin/orders',        icon: <ShoppingBag size={17} />,     label: 'Orders' },
+  { to: '/admin/bulk-orders',   icon: <Users size={17} />,           label: 'Bulk Orders' },
   { to: '/admin/faqs',          icon: <HelpCircle size={17} />,      label: "FAQ's" },
   { to: '/admin/page-contents', icon: <FileText size={17} />,        label: 'Page Contents' },
 ];

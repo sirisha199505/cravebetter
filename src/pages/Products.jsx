@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Minus, TrendingDown, Activity, Wheat, ArrowRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useProducts } from '../hooks/useProducts';
+import ProductImageSlider from '../components/ProductImageSlider';
 
-function ProductCard({ product }) {
+function ProductCard({ product, isHovered = false, onMouseEnter, onMouseLeave }) {
   const { addToCart, updateQty, removeFromCart, items } = useCart();
   const cartItem = items.find(i => i.id === product.id);
   const qty = cartItem?.qty || 0;
@@ -16,14 +18,21 @@ function ProductCard({ product }) {
   };
 
   return (
-    <div className="group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col">
-
+    <div
+      className="group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       {/* Image */}
-      <Link to={`/products/${product.id}`} className="block relative bg-[#fdf5f0] overflow-hidden">
-        <img
-          src={product.image}
+      <Link
+        to={`/products/${product.id}`}
+        className="block relative bg-[#fdf5f0] overflow-hidden h-64 sm:h-72"
+      >
+        <ProductImageSlider
+          images={product.images?.length ? product.images : [product.image]}
           alt={product.name}
-          className="w-full h-64 sm:h-72 object-contain py-5 px-4 group-hover:scale-105 transition-transform duration-500"
+          imgClassName="py-5 px-4"
+          isHovered={isHovered}
         />
         {product.badge && (
           <span
@@ -108,6 +117,7 @@ function ProductCard({ product }) {
 
 export default function Products() {
   const { products, loading } = useProducts();
+  const [hoveredId, setHoveredId] = useState(null);
 
   return (
     <main className="bg-white overflow-x-hidden">
@@ -144,17 +154,23 @@ export default function Products() {
 
       {/* ── PRODUCT GRID ── */}
       <section className="py-12 sm:py-16">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          {loading ? (
-            <div className="col-span-4 py-20 text-center text-gray-400 text-sm">Loading products…</div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-              {products.map(p => (
-                <ProductCard key={p.id} product={p} />
+        {loading ? (
+          <div className="py-20 text-center text-gray-400 text-sm">Loading products…</div>
+        ) : (
+          <div className="max-w-6xl mx-auto px-5 sm:px-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+              {products.map((p) => (
+                <ProductCard
+                  key={p.id}
+                  product={p}
+                  isHovered={hoveredId === p.id}
+                  onMouseEnter={() => setHoveredId(p.id)}
+                  onMouseLeave={() => setHoveredId(null)}
+                />
               ))}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </section>
 
       {/* ── TRUST BAR ── */}

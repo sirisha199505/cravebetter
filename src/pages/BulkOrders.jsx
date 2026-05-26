@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Building2, Users, Dumbbell, Bus, Plane, CheckCircle, ChevronDown } from 'lucide-react';
+import { useProducts } from '../hooks/useProducts';
+import { API_BASE } from '../config';
 
 const targets = [
   { icon: <Building2 size={30} className="text-[#54221b]" />, label: 'Corporate Offices' },
@@ -9,17 +11,8 @@ const targets = [
   { icon: <Plane size={30} className="text-[#54221b]" />, label: 'Events & Gifting' },
 ];
 
-const productOptions = [
-  { value: '', label: 'Select a flavour...' },
-  { value: 'Classic Square', label: 'Classic Square — ₹35 · 28g · 120 kcal' },
-  { value: 'Dark Choco Square', label: 'Dark Choco Square — ₹60 · 38g · 180 kcal' },
-  { value: 'milk choco square', label: 'milk choco square — ₹50 · 38g · 170 kcal' },
-  { value: 'Assorted Mix', label: 'Assorted Mix (all flavours)' },
-];
-
-import { API_BASE } from '../config';
-
 export default function BulkOrders() {
+  const { products } = useProducts();
   const [form, setForm] = useState({
     business_name: '',
     contact_name: '',
@@ -177,9 +170,13 @@ export default function BulkOrders() {
                     onChange={handleChange}
                     className={`${inputCls} appearance-none pr-10 cursor-pointer`}
                   >
-                    {productOptions.map(o => (
-                      <option key={o.value} value={o.value}>{o.label}</option>
+                    <option value="">Select a flavour…</option>
+                    {products.map(p => (
+                      <option key={p.id} value={p.name}>
+                        {p.name}{p.price ? ` — ₹${p.price}` : ''}{p.weight ? ` · ${p.weight}` : ''}
+                      </option>
                     ))}
+                    <option value="Assorted Mix">Assorted Mix (all flavours)</option>
                   </select>
                   <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
                 </div>
@@ -250,11 +247,14 @@ export default function BulkOrders() {
           <div className="bg-[#f8fafc] border border-gray-100 rounded-2xl p-6">
             <h4 className="font-black text-gray-900 text-sm mb-4">Available Flavours</h4>
             <div className="space-y-2.5">
-              {productOptions.slice(1).map(o => (
-                <div key={o.value} className="flex items-center justify-between text-sm">
-                  <span className="text-gray-700 font-medium">{o.value}</span>
+              {products.map(p => (
+                <div key={p.id} className="flex items-center justify-between text-sm">
+                  <div>
+                    <span className="text-gray-700 font-medium">{p.name}</span>
+                    {p.weight && <span className="text-xs text-gray-400 ml-1.5">· {p.weight}</span>}
+                  </div>
                   <span className="text-xs text-[#2D6A4F] font-semibold bg-[#2D6A4F]/10 px-2.5 py-0.5 rounded-full">
-                    {o.label.includes('protein') ? o.label.split('— ')[1] : 'All flavours'}
+                    ₹{p.price}
                   </span>
                 </div>
               ))}

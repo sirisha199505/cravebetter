@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { TrendingDown, Wheat, Sprout, ArrowRight, Star, Plus, Minus, Coffee, Moon, Zap, Activity, ChevronDown, Search } from 'lucide-react';
+import ProductImageSlider from '../components/ProductImageSlider';
 import { useCart } from '../context/CartContext';
 import { useProducts } from '../hooks/useProducts';
 import { useFAQs } from '../hooks/useFAQs';
@@ -221,6 +222,8 @@ function FAQSection() {
 export default function Home() {
   const { products } = useProducts();
   const { addToCart, updateQty, removeFromCart, items } = useCart();
+  const [hoveredId, setHoveredId] = useState(null);
+  const [carouselPaused, setCarouselPaused] = useState(false);
 
   const getQty = (id) => items.find(i => i.id === id)?.qty || 0;
   const handleAdd = (p) => addToCart(p, 1);
@@ -364,13 +367,16 @@ export default function Home() {
               <div
                 key={p.id}
                 className="group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
+                onMouseEnter={() => setHoveredId(p.id)}
+                onMouseLeave={() => setHoveredId(null)}
               >
                 {/* Image area */}
-                <div className="relative overflow-hidden bg-[#fdf5f0] rounded-3xl mx-3 mt-3">
-                  <img
-                    src={p.image}
+                <div className="relative overflow-hidden bg-[#fdf5f0] rounded-3xl mx-3 mt-3 h-72 sm:h-80">
+                  <ProductImageSlider
+                    images={p.images?.length ? p.images : [p.image]}
                     alt={p.name}
-                    className="w-full h-56 sm:h-60 object-contain group-hover:scale-105 transition-transform duration-500 py-3 px-2"
+                    imgClassName="py-3 px-2"
+                    isHovered={hoveredId === p.id}
                   />
                   {p.badge && (
                     <span

@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ChevronLeft, Plus, Minus, ShoppingCart, Check, TrendingDown, Activity, Wheat, Sprout, ArrowRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useProducts } from '../hooks/useProducts';
+import ProductImageGallery from '../components/ProductImageGallery';
 
 /* Per-product taste chips keyed by product name */
 const tasteChipsByName = {
@@ -29,6 +30,7 @@ export default function ProductDetail() {
 
   const product = products.find(p => p.id === Number(id));
   const related = products.filter(p => p.id !== Number(id));
+  const productImages = product?.images?.length ? product.images : product ? [product.image] : [];
   const chips = tasteChipsByName[product?.name] || ['Crunchy', 'Rich', 'Satisfying'];
 
   const handleAdd = () => {
@@ -60,19 +62,14 @@ export default function ProductDetail() {
             All Products
           </button>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
 
-            {/* Image */}
-            <div className="relative flex items-center justify-center py-8 sm:py-10">
-              {/* Glow */}
-              <div
-                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-32 blur-3xl opacity-25 rounded-full"
-                style={{ backgroundColor: product.badgeColor || '#54221b' }}
-              />
-              <img
-                src={product.image}
+            {/* Image gallery */}
+            <div className="py-4 sm:py-6">
+              <ProductImageGallery
+                images={productImages}
                 alt={product.name}
-                className="relative w-full max-w-xs sm:max-w-sm md:max-w-md object-contain drop-shadow-2xl z-10"
+                badgeColor={product.badgeColor}
               />
             </div>
 
@@ -88,7 +85,7 @@ export default function ProductDetail() {
                 </span>
               )}
 
-              <h1 className="text-4xl sm:text-5xl font-black text-gray-900 leading-tight mb-1 tracking-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 leading-tight mb-1 tracking-tight">
                 {product.name}
               </h1>
               {product.tagline && (
@@ -120,7 +117,7 @@ export default function ProductDetail() {
               )}
 
               {/* Macros strip */}
-              <div className="grid grid-cols-4 gap-2 mb-6">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
                 {[
                   { label: 'Protein', value: product.protein },
                   { label: 'Fiber', value: product.fiber },

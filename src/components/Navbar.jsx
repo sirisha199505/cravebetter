@@ -12,6 +12,7 @@ export default function Navbar() {
     { to: '/', label: 'Home' },
     { to: '/products', label: 'Products' },
     { to: '/our-story', label: 'Our Story' },
+    { to: '/bulk-orders', label: 'Bulk Orders' },
     { to: '/faqs', label: "FAQ's" },
   ];
 
@@ -28,11 +29,11 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 sm:h-14 flex items-center justify-between">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-1 sm:gap-3 flex-shrink-0">
+          <Link to="/" className="flex items-center flex-shrink-0">
             <img
-              src="/cravebetter.png"
+              src="/logo.png"
               alt="Crave Better Foods"
-              className="h-10 sm:h-12 w-auto max-w-[600px] sm:max-w-[400px] object-contain flex-shrink-0"
+              className="h-10 sm:h-12 w-auto object-contain"
             />
           </Link>
 
@@ -85,6 +86,9 @@ export default function Navbar() {
         {/* Mobile menu */}
         {open && (
           <div className="md:hidden bg-white border-t border-gray-100 px-4 py-4 flex flex-col gap-1 shadow-lg">
+            <div className="flex justify-center mb-3">
+              <img src="/logo.png" alt="Crave Better Foods" className="h-10 w-auto object-contain" />
+            </div>
             {links.map(l => (
               <Link
                 key={l.to}

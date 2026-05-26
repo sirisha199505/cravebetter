@@ -22,6 +22,7 @@ import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminOrders from './pages/admin/AdminOrders';
+import AdminBulkOrders from './pages/admin/AdminBulkOrders';
 import AdminPageContents from './pages/admin/AdminPageContents';
 import AdminFAQs from './pages/admin/AdminFAQs';
 
@@ -74,6 +75,7 @@ export default function App() {
               <Route path="products" element={<AdminProducts />} />
               <Route path="orders" element={<AdminOrders />} />
               <Route path="page-contents" element={<AdminPageContents />} />
+              <Route path="bulk-orders" element={<AdminBulkOrders />} />
               <Route path="faqs" element={<AdminFAQs />} />
             </Route>
           </Routes>

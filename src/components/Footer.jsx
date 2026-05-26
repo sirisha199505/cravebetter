@@ -5,11 +5,11 @@ export default function Footer() {
   return (
     <footer className="bg-[#54221b] text-white mt-auto">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10">
 
           {/* Brand */}
           <div>
-            <img src="/cravebetter.png" alt="Crave Better Foods" className="h-10 w-auto object-contain mb-4" />
+            <img src="/logo.png" alt="Crave Better Foods" className="h-10 w-auto object-contain mb-4" />
             <p className="text-sm text-red-100 leading-relaxed">
               Because healthy doesn't have to be boring — and tasty doesn't have to be guilty.
               Real ingredients, zero compromise.

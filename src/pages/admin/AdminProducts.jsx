@@ -12,7 +12,7 @@ function authHeader() {
 const EMPTY_FORM = {
   name: '', pack: 'Pack of 6', tagline: '', category: 'Chocolate Square',
   description: '', price: '', original_price: '',
-  image_url: '', badge: '', badge_color: '',
+  image_url: '', images: [], badge: '', badge_color: '',
   rating: '', orders_count: '',
   protein: '', fiber: '', calories: '', transfat: '', carbs: '', fat: '', weight: '',
   ingredients: '',
@@ -45,6 +45,7 @@ export default function AdminProducts() {
   };
 
   const openEdit = p => {
+    const imgs = Array.isArray(p.images) && p.images.length > 0 ? p.images : (p.image ? [p.image] : []);
     setForm({
       name:           p.name || '',
       pack:           p.pack || 'Pack of 6',
@@ -53,7 +54,8 @@ export default function AdminProducts() {
       description:    p.description || '',
       price:          p.price || '',
       original_price: p.originalPrice || '',
-      image_url:      p.image || '',
+      image_url:      p.image || imgs[0] || '',
+      images:         imgs,
       badge:          p.badge || '',
       badge_color:    p.badgeColor || '',
       rating:         p.rating || '',
@@ -73,8 +75,16 @@ export default function AdminProducts() {
 
   const handleChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
 
+  const addImage     = () => setForm(f => ({ ...f, images: [...f.images, ''] }));
+  const removeImage  = i  => setForm(f => ({ ...f, images: f.images.filter((_, idx) => idx !== i) }));
+  const updateImage  = (i, val) => setForm(f => {
+    const imgs = [...f.images]; imgs[i] = val;
+    return { ...f, images: imgs, image_url: i === 0 ? val : f.image_url };
+  });
+
   const handleSave = async () => {
     setSaving(true); setErrMsg('');
+    const cleanImages = form.images.map(s => s.trim()).filter(Boolean);
     const payload = {
       data: {
         ...form,
@@ -83,6 +93,8 @@ export default function AdminProducts() {
         rating:         form.rating ? Number(form.rating) : 0,
         orders_count:   form.orders_count ? Number(form.orders_count) : 0,
         benefits:       form.benefits.split('\n').map(s => s.trim()).filter(Boolean),
+        images:         cleanImages,
+        image_url:      cleanImages[0] || form.image_url,
       },
     };
     try {
@@ -133,10 +145,11 @@ export default function AdminProducts() {
               {products.map(p => (
                 <tr key={p.id} className="border-t border-gray-50 hover:bg-gray-50/50 transition-colors">
                   <td className="px-4 py-3">
-                    {p.image
-                      ? <img src={p.image} alt={p.name} className="w-14 h-14 object-contain bg-[#faf7f5] rounded-xl p-1" />
-                      : <div className="w-14 h-14 bg-gray-100 rounded-xl" />
-                    }
+                    <div className="flex gap-1">
+                      {(p.images?.length ? p.images : p.image ? [p.image] : []).slice(0, 3).map((src, i) => (
+                        <img key={i} src={src} alt={p.name} className="w-10 h-10 object-contain bg-[#faf7f5] rounded-lg p-0.5 border border-gray-100" />
+                      ))}
+                    </div>
                   </td>
                   <td className="px-4 py-3">
                     <p className="font-medium text-gray-900">{p.name}</p>
@@ -212,12 +225,42 @@ export default function AdminProducts() {
                   className={`${inputCls} resize-none`} />
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1">Image URL</label>
-                <input type="text" name="image_url" value={form.image_url} onChange={handleChange}
-                  placeholder="/classic-1.png" className={inputCls} />
-                {form.image_url && (
-                  <img src={form.image_url} alt="preview" className="mt-2 h-24 object-contain bg-[#faf7f5] rounded-xl px-2" />
+              {/* ── Product Images ── */}
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Product Images</p>
+              <p className="text-[10px] text-gray-400 -mt-2">First image is the main thumbnail. Add up to 4 images (product shots + nutrition label).</p>
+              <div className="space-y-2">
+                {form.images.map((src, i) => (
+                  <div key={i} className="flex gap-2 items-start">
+                    <div className="flex-1">
+                      <input
+                        type="text"
+                        value={src}
+                        onChange={e => updateImage(i, e.target.value)}
+                        placeholder={`/classic-${i + 1}.png`}
+                        className={inputCls}
+                      />
+                    </div>
+                    {src && (
+                      <img src={src} alt="preview" className="w-14 h-14 object-contain bg-[#faf7f5] rounded-xl p-1 border border-gray-100 flex-shrink-0" />
+                    )}
+                    <button
+                      onClick={() => removeImage(i)}
+                      className="p-2 rounded-lg text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors flex-shrink-0 mt-0.5"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                ))}
+                {form.images.length < 5 && (
+                  <button
+                    onClick={addImage}
+                    className="flex items-center gap-1.5 text-xs font-bold text-[#54221b] hover:text-[#6b2b22] transition-colors mt-1"
+                  >
+                    <Plus size={13} /> Add Image URL
+                  </button>
+                )}
+                {form.images.length === 0 && (
+                  <p className="text-[10px] text-gray-400 italic">No images added yet. Click "Add Image URL" to start.</p>
                 )}
               </div>
 
