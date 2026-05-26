@@ -24,7 +24,7 @@ export default function Footer() {
                 { to: '/', label: 'Home' },
                 { to: '/products', label: 'Products' },
                 { to: '/our-story', label: 'Our Story' },
-                // { to: '/bulk-orders', label: 'Bulk Orders' },
+                { to: '/bulk-orders', label: 'Bulk Orders' },
                 { to: '/cart', label: 'Cart' },
               ].map(l => (
                 <li key={l.to}>
