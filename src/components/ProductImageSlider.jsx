@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
-export default function ProductImageSlider({ images = [], alt = '', imgClassName = '', isHovered = false }) {
+export default function ProductImageSlider({ images = [], alt = '', imgClassName = '', isHovered = false, interval = 3000 }) {
   const [idx, setIdx] = useState(0);
   const [animated, setAnimated] = useState(true);
   const timer = useRef(null);
@@ -15,9 +15,9 @@ export default function ProductImageSlider({ images = [], alt = '', imgClassName
     timer.current = setInterval(() => {
       setAnimated(true);
       setIdx(i => i + 1);
-    }, 2500);
+    }, interval);
     return () => clearInterval(timer.current);
-  }, [isHovered, count]);
+  }, [isHovered, count, interval]);
 
   // When the clone (last slide) finishes, snap silently back to real index 0
   const onTransitionEnd = () => {
