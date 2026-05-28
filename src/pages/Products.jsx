@@ -130,7 +130,7 @@ export default function Products() {
         <div className="relative max-w-6xl mx-auto px-5 sm:px-6 text-center">
           <span className="inline-block text-[10px] sm:text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Pick Your Middle Ground</span>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-white mb-4 tracking-tight">
-            4 Flavours.{' '}
+            3 Flavours.{' '}
             <span className="text-red-300">Zero Guilt.</span>
           </h1>
           <p className="text-gray-400 max-w-xl mx-auto text-sm sm:text-base mb-8 leading-relaxed">

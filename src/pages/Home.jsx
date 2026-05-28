@@ -350,7 +350,7 @@ export default function Home() {
             <div>
               <span className="inline-block text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#2D6A4F] mb-2 sm:mb-3">Pick Your Favourite</span>
               <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-gray-900">
-                4 Flavours.{' '}
+                3 Flavours.{' '}
                 <span className="text-[#54221b]">Zero Guilt.</span>
               </h2>
             </div>
