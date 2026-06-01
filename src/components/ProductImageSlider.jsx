@@ -1,10 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 
-export default function ProductImageSlider({ images = [], alt = '', imgClassName = '', isHovered = false, interval = 3000 }) {
+export default function ProductImageSlider({ images = [], alt = '', imgClassName = '', isHovered = false, interval = 3000, showDots = true, }) {
   const [idx, setIdx] = useState(0);
   const [animated, setAnimated] = useState(true);
   const timer = useRef(null);
   const count = images.length;
+  
+
+  
 
   // Append clone of first image so the loop always moves left
   const slides = count > 1 ? [...images, images[0]] : images;
@@ -59,7 +62,7 @@ export default function ProductImageSlider({ images = [], alt = '', imgClassName
         ))}
       </div>
 
-      {count > 1 && (
+      { showDots && count > 1 && (
         <div className="absolute bottom-10 left-0 right-0 flex justify-center gap-1.5 z-10 pointer-events-none">
           {images.map((_, i) => (
             <span

@@ -33,6 +33,7 @@ function ProductCard({ product, isHovered = false, onMouseEnter, onMouseLeave })
           alt={product.name}
           imgClassName="py-5 px-4"
           isHovered={isHovered}
+          showDots={false}
         />
         {product.badge && (
           <span
@@ -166,6 +167,7 @@ export default function Products() {
                   isHovered={hoveredId === p.id}
                   onMouseEnter={() => setHoveredId(p.id)}
                   onMouseLeave={() => setHoveredId(null)}
+                  showDot
                 />
               ))}
             </div>

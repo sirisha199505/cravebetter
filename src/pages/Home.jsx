@@ -378,6 +378,7 @@ export default function Home() {
                     imgClassName="py-3 px-2"
                     isHovered={hoveredId === p.id}
                     interval={2500}
+                    showDots={false}
                   />
                   {p.badge && (
                     <span
