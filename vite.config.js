@@ -4,8 +4,9 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-   build: {
-    outDir: 'dist',
+  build: {
+    outDir: '../cravebetter-api/public',
+    emptyOutDir: true
   },
 
   server: {
