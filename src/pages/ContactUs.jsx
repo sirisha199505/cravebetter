@@ -59,9 +59,11 @@ function DefaultContact() {
             <MapPin size={18} className="text-[#7b3f00]" />
           </div>
           <div>
-            <p className="font-bold text-gray-800 text-sm mb-1">Location</p>
-            <p className="text-xs text-gray-500">Hyderabad, Telangana</p>
-            <p className="text-xs text-gray-500">India</p>
+            <p className="font-bold text-gray-800 text-sm mb-1">Marketed by</p>
+            <p className="text-xs font-semibold text-gray-700">Goodflux Foods Private Limited</p>
+            <p className="text-xs text-gray-500 leading-relaxed mt-1">
+              F.No 201, P.No 733, 735, Jetty Uma Chambers, Defence Colony, Sainikpuri, Malkajgiri, Hyderabad, Telangana – 500094
+            </p>
           </div>
         </div>
       </div>
