@@ -25,13 +25,13 @@ const DEFAULT_CONTENT = `
 </ul>
 
 <h2>3. Processing Time</h2>
-<p>All orders are processed within <strong>1–2 business days</strong> of payment confirmation. Orders placed on weekends or public holidays will be processed on the next working day.</p>
+<p>All orders are processed within <strong>1-2 business days</strong> of payment confirmation. Orders placed on weekends or public holidays will be processed on the next working day.</p>
 
 <h2>4. Estimated Delivery Time</h2>
 <ul>
-  <li><strong>Metro cities</strong> (Hyderabad, Bengaluru, Mumbai, Delhi, Chennai, Kolkata): 2–4 business days</li>
-  <li><strong>Tier 2 &amp; Tier 3 cities:</strong> 4–7 business days</li>
-  <li><strong>Remote areas:</strong> 7–10 business days</li>
+  <li><strong>Metro cities</strong> (Hyderabad, Bengaluru, Mumbai, Delhi, Chennai, Kolkata): 2-4 business days</li>
+  <li><strong>Tier 2 &amp; Tier 3 cities:</strong> 4-7 business days</li>
+  <li><strong>Remote areas:</strong> 7-10 business days</li>
 </ul>
 <p>Delivery timelines are estimates and may vary due to courier delays, natural events, or public holidays.</p>
 
