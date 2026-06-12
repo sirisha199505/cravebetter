@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation, Outlet } from 'react-router-dom';
 import {
   LayoutDashboard, Package, ShoppingBag, Users,
   LogOut, ChevronDown, User, KeyRound, ExternalLink,
-  Eye, EyeOff, X, FileText, HelpCircle,
+  Eye, EyeOff, X, HelpCircle,
 } from 'lucide-react';
 
 const navItems = [
@@ -12,7 +12,6 @@ const navItems = [
   { to: '/admin/orders',        icon: <ShoppingBag size={17} />,     label: 'Orders' },
   { to: '/admin/bulk-orders',   icon: <Users size={17} />,           label: 'Bulk Orders' },
   { to: '/admin/faqs',          icon: <HelpCircle size={17} />,      label: "FAQ's" },
-  { to: '/admin/page-contents', icon: <FileText size={17} />,        label: 'Page Contents' },
 ];
 
 import { API_BASE } from '../../config';
