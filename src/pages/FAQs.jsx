@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown, Search, ArrowRight } from 'lucide-react';
 import { useFAQs } from '../hooks/useFAQs';
+import JsonLd from '../components/JsonLd';
 
 function highlightText(text, term) {
   if (!term) return text;
@@ -52,8 +53,20 @@ export default function FAQs() {
     f.answer.toLowerCase().includes(query.toLowerCase())
   );
 
+  // Schema reflects the full FAQ list (not the search-filtered view).
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(f => ({
+      '@type': 'Question',
+      name: f.question,
+      acceptedAnswer: { '@type': 'Answer', text: f.answer },
+    })),
+  };
+
   return (
     <main className="bg-white overflow-x-hidden">
+      <JsonLd id="faq" data={faqSchema} />
 
       {/* Header */}
       <section className="bg-gray-950 py-12 sm:py-16 relative overflow-hidden">

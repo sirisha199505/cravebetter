@@ -4,6 +4,8 @@ import { ChevronLeft, Plus, Minus, ShoppingCart, Check, TrendingDown, Activity, 
 import { useCart } from '../context/CartContext';
 import { useProducts } from '../hooks/useProducts';
 import ProductImageGallery from '../components/ProductImageGallery';
+import JsonLd from '../components/JsonLd';
+import { SITE_URL } from '../config';
 
 /* Per-product taste chips keyed by product name */
 const tasteChipsByName = {
@@ -48,8 +50,26 @@ export default function ProductDetail() {
     );
   }
 
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    image: productImages.map(img => `${SITE_URL}${img}`),
+    description: product.description,
+    sku: `CB-${product.id}`,
+    brand: { '@type': 'Brand', name: 'Crave Better Foods' },
+    offers: {
+      '@type': 'Offer',
+      url: `${SITE_URL}/products/${product.id}`,
+      priceCurrency: 'INR',
+      price: product.price,
+      availability: 'https://schema.org/InStock',
+    },
+  };
+
   return (
     <main className="bg-white overflow-x-hidden">
+      <JsonLd id={`product-${product.id}`} data={productSchema} />
 
       {/* ── PRODUCT HERO ── */}
       <section className="bg-[#faf7f5] pt-6 pb-0 sm:pb-0">
