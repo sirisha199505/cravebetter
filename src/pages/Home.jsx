@@ -327,10 +327,10 @@ export default function Home() {
             <div className="relative w-full max-w-[260px] sm:max-w-sm md:max-w-lg mx-auto">
               <div className="absolute inset-8 bg-red-400/20 rounded-full blur-3xl" />
               <img
-                src="/hero-banner.png"
+                src="/hero-banner.webp"
                 alt="Crave Better Chocolate Squares"
                 className="relative w-full object-contain drop-shadow-2xl"
-                onError={e => { e.target.src = '/classic-1.png'; }}
+                onError={e => { e.target.src = '/classic-1.webp'; }}
               />
             </div>
           </div>
